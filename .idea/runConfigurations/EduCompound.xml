@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="EduCompound" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.example.EduCompoundApplication" />
+    <module name="EduCompound" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -22,6 +22,9 @@ public class Users {
 
     private String password; // hashed
 
+    private String firstName;
+    private String lastName;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

@@ -1,0 +1,29 @@
+package org.example.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.example.dto.requests.TenantCreationRequest;
+import org.example.service.TenantService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/superadmin/tenants")
+@RequiredArgsConstructor
+public class TenantCreationController {
+
+    private final TenantService tenantService;
+
+    @PostMapping
+    public ResponseEntity<?> tenantCreation(@RequestBody TenantCreationRequest tenantCreationRequest){
+        try{
+            return new ResponseEntity<>(tenantService.createTenant(tenantCreationRequest), HttpStatus.CREATED);
+        }catch (Exception exception){
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+}

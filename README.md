@@ -1,0 +1,2 @@
+# EduCompound
+School Management System

@@ -1,6 +1,7 @@
 package org.example.service;
 
 import lombok.AllArgsConstructor;
+import org.example.data.model.Role;
 import org.example.data.model.Tenant;
 import org.example.data.model.Users;
 import org.example.data.repositories.TenantRepository;
@@ -38,6 +39,7 @@ public class TenantServiceImp implements TenantService {
                 .password(passwordEncoder.encode(request.getAdminPassword()))
                 .firstName(request.getAdminFirstName())
                 .lastName(request.getAdminLastName())
+                .role(Role.ADMIN)
                 .createdAt(new Date())
                 .build();
         userRepository.save(user);

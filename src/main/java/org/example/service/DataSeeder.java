@@ -31,7 +31,6 @@ public class DataSeeder {
                         .role(Role.SUPER_ADMIN)
                         .createdAt(new Date())
                         .build();
-
                 userRepository.save(superAdmin);
                 System.out.println("✅ Super Admin created: " + email);
             } else {

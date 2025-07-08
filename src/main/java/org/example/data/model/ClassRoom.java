@@ -18,7 +18,7 @@ public class ClassRoom {
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")
-    private Tenant tenant;
+    private Admin admin;
 
     private String name;
 

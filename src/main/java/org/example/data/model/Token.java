@@ -1,6 +1,5 @@
 package org.example.data.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
@@ -10,15 +9,22 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Tenant {
+public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tenantId;
+    private Long id;
 
-    private String schoolName;
+    private String token;
 
-    private String subdomain;
+    private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "tenant_id")
+    private Admin admin;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiresAt;
 }

@@ -20,7 +20,7 @@ public class Fee {
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")
-    private Tenant tenant;
+    private Admin admin;
 
     @ManyToOne
     @JoinColumn(name = "class_id")

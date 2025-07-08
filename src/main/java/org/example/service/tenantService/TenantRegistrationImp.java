@@ -2,7 +2,7 @@ package org.example.service.tenantService;
 
 import lombok.AllArgsConstructor;
 import org.example.data.model.Role;
-import org.example.data.model.Tenant;
+import org.example.data.model.Admin;
 import org.example.data.model.UserPrincipal;
 import org.example.data.model.Users;
 import org.example.data.repositories.TenantRepository;
@@ -34,14 +34,14 @@ public class TenantRegistrationImp implements TenantRegistration {
         Users users = userPrincipal.users();
         userRepository.findByEmail(users.getEmail());
 
-        Tenant tenant = Tenant.builder()
+        Admin admin = Admin.builder()
                 .schoolName(request.getSchoolName())
                 .subdomain(request.getSubdomain())
                 .createdAt(new Date())
                 .build();
-        Tenant tenants = tenantRepository.save(tenant);
+        Admin tenants = tenantRepository.save(admin);
         Users user = Users.builder()
-                .tenant(tenant)
+                .admin(admin)
                 .email(request.getAdminEmail())
                 .password(passwordEncoder.encode(request.getAdminPassword()))
                 .firstName(request.getAdminFirstName())

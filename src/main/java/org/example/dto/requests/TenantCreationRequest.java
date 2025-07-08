@@ -1,8 +1,12 @@
 package org.example.dto.requests;
 
-import lombok.Data;
+import lombok.*;
 
+@Getter
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TenantCreationRequest {
     private String schoolName;
     private String subdomain;

@@ -1,13 +1,16 @@
-package org.example.service;
+package org.example.service.tenantService;
 
 import lombok.AllArgsConstructor;
 import org.example.data.model.Role;
 import org.example.data.model.Tenant;
+import org.example.data.model.UserPrincipal;
 import org.example.data.model.Users;
 import org.example.data.repositories.TenantRepository;
 import org.example.data.repositories.UserRepository;
 import org.example.dto.requests.TenantCreationRequest;
 import org.example.dto.responses.TenantCreationResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +20,7 @@ import static org.example.utilities.Utilities.REGISTRATION_SUCCESS;
 
 @Service
 @AllArgsConstructor
-public class TenantServiceImp implements TenantService {
+public class TenantRegistrationImp implements TenantRegistration {
 
     private final TenantRepository tenantRepository;
     private final PasswordEncoder passwordEncoder;
@@ -25,6 +28,11 @@ public class TenantServiceImp implements TenantService {
 
     @Override
     public TenantCreationResponse createTenant(TenantCreationRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || !authentication.isAuthenticated()){throw new IllegalArgumentException("Authentication required");}
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Users users = userPrincipal.users();
+        userRepository.findByEmail(users.getEmail());
 
         Tenant tenant = Tenant.builder()
                 .schoolName(request.getSchoolName())
@@ -32,7 +40,6 @@ public class TenantServiceImp implements TenantService {
                 .createdAt(new Date())
                 .build();
         Tenant tenants = tenantRepository.save(tenant);
-
         Users user = Users.builder()
                 .tenant(tenant)
                 .email(request.getAdminEmail())
@@ -43,14 +50,11 @@ public class TenantServiceImp implements TenantService {
                 .createdAt(new Date())
                 .build();
         userRepository.save(user);
-
-        TenantCreationResponse.builder()
+        return TenantCreationResponse.builder()
                 .schoolName(tenants.getSchoolName())
                 .subDomain(tenants.getSubdomain())
                 .message(REGISTRATION_SUCCESS)
                 .dateCreated(new Date())
                 .build();
-
-        return null;
     }
 }

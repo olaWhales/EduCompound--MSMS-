@@ -29,7 +29,8 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/superadmin/tenants").permitAll()
+                        .requestMatchers("/api/superadmin/tenants/registration").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/user/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

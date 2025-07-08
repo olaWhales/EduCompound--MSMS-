@@ -10,7 +10,7 @@ import java.util.Collections;
 public record UserPrincipal(Users users) implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + users.getRole()));
     }
 
     @Override

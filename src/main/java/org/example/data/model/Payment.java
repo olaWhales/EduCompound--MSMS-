@@ -16,7 +16,8 @@ public class Payment {
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")
-    private Tenant tenant;
+    private
+    Tenant tenant;
 
     @ManyToOne
     @JoinColumn(name = "student_id")

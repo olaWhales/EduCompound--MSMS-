@@ -1,16 +1,16 @@
 package org.example.dto.responses;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Date;
 
+@Getter
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class TenantCreationResponse {
     private String schoolName;
     private String subDomain;

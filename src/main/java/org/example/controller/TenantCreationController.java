@@ -2,7 +2,7 @@ package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.dto.requests.TenantCreationRequest;
-import org.example.service.TenantService;
+import org.example.service.tenantService.TenantRegistration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TenantCreationController {
 
-    private final TenantService tenantService;
+    private final TenantRegistration tenantRegistration;
 
-    @PostMapping
+    @PostMapping("/registration")
     public ResponseEntity<?> tenantCreation(@RequestBody TenantCreationRequest tenantCreationRequest){
         try{
-            return new ResponseEntity<>(tenantService.createTenant(tenantCreationRequest), HttpStatus.CREATED);
+            return new ResponseEntity<>(tenantRegistration.createTenant(tenantCreationRequest), HttpStatus.CREATED);
         }catch (Exception exception){
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }

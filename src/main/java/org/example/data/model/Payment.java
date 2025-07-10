@@ -17,7 +17,7 @@ public class Payment {
     @ManyToOne
     @JoinColumn(name = "tenant_id")
     private
-    Admin admin;
+    AdminTenant adminTenant;
 
     @ManyToOne
     @JoinColumn(name = "student_id")

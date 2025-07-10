@@ -20,7 +20,7 @@ public class Token {
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")
-    private Admin admin;
+    private AdminTenant adminTenant;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;

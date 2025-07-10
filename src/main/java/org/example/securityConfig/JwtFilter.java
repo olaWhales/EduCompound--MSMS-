@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Set;
 
 @Component
 @Slf4j
@@ -22,35 +23,49 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final MyUserDetailsService myUserDetailsService;
 
+    private static final Set<String> PUBLIC_PATHS = Set.of(
+            "/user/login",
+            "/api/teacher/register",
+            "/api/teacher/register/teacher",
+            "/resources/",
+            "/static/",
+            "/css/",
+            "/js/"
+    );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-            String authHeader = request.getHeader("Authorization");
-            String token = null ;
-            String username = null ;
-
-            if(authHeader != null && authHeader.startsWith("Bearer ")) {
-                token = authHeader.substring(7);
-                try {
-                    username = jwtService.extractUsername(token);
-                }catch (Exception exception) {
-                    log.error("Error extracting username from token: {}", exception.getMessage());
-                }
-            }
-
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
-                if (jwtService.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                } else {
-                    log.warn("Token validation failed for user: {}", username);
-                }
-            }
+        String path = request.getRequestURI();
+        if (PUBLIC_PATHS.stream().anyMatch(path::startsWith)) {
             filterChain.doFilter(request, response);
+            return;
+        }
+
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+        String username = null;
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+            try {
+                username = jwtService.extractUsername(token);
+            } catch (Exception exception) {
+                log.error("Error extracting username from token: {}", exception.getMessage());
+            }
+        }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
+            if (jwtService.validateToken(token, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            } else {
+                log.warn("Token validation failed for user: {}", username);
+            }
+        }
+        filterChain.doFilter(request, response);
     }
 }
-

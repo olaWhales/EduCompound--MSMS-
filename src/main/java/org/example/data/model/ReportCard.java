@@ -16,7 +16,7 @@ public class ReportCard {
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")
-    private Admin admin;
+    private AdminTenant adminTenant;
 
     @ManyToOne
     @JoinColumn(name = "student_id")

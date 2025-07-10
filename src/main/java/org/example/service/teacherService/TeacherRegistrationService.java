@@ -1,7 +1,7 @@
-package org.example.service;
+package org.example.service.teacherService;
 
 import org.example.dto.requests.TeacherRegistrationRequest;
 
-public interface TeacherRegistration {
+public interface TeacherRegistrationService {
     void completeTeacherRegistration(TeacherRegistrationRequest request, String token);
 }

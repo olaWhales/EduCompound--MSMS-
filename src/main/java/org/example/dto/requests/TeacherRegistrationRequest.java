@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.data.model.Role;
-import org.example.data.model.Admin;
+import org.example.data.model.AdminTenant;
 import org.example.data.model.Users;
 
 @Data
@@ -19,6 +19,6 @@ public class TeacherRegistrationRequest {
     private String lastName;
 
     private Users users;
-    private Admin admin;
+    private AdminTenant adminTenant;
     private Role role;
 }

@@ -1,6 +1,5 @@
 package org.example.data.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
@@ -10,7 +9,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Admin {
+public class AdminTenant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tenantId;
@@ -18,6 +17,8 @@ public class Admin {
     private String schoolName;
 
     private String subdomain;
+
+//    private String email;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;

@@ -15,7 +15,7 @@ public class Parent {
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")
-    private Admin admin;
+    private AdminTenant adminTenant;
 
     @OneToOne
     @JoinColumn(name = "user_id")

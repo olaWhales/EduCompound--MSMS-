@@ -4,44 +4,82 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.example.data.model.Users;
+import org.example.data.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 
+//@Service
+//public class JwtService {
+//    private UserRepository userRepository ;
+//
+//    private String secreteKey = "";
+//    public JwtService() {
+//        try{
+//            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHa256");
+//            SecretKey sk = keyGenerator.generateKey();
+//            secreteKey = Base64.getEncoder().encodeToString(sk.getEncoded());
+//        }catch (NoSuchAlgorithmException e){
+//            throw new RuntimeException(e);
+//        }
+//    }
 @Service
 public class JwtService {
+    private final UserRepository userRepository;
+    private final String secreteKey;
 
-    private String secreteKey = "";
-    public JwtService() {
-        try{
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHa256");
+    public JwtService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256"); // Fixed typo
             SecretKey sk = keyGenerator.generateKey();
-            secreteKey = Base64.getEncoder().encodeToString(sk.getEncoded());
-        }catch (NoSuchAlgorithmException e){
+            this.secreteKey = Base64.getEncoder().encodeToString(sk.getEncoded());
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
-     public String GenerateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-         return Jwts.builder()
-                 .claims()
-                 .add(claims)
-                 .subject(username)
-                 .issuedAt(new Date(System.currentTimeMillis()))
-                 .expiration(new Date(System.currentTimeMillis() + 2000 * 60 * 60 * 10 ))
-                 .and()
-                 .signWith(getkey())
-                 .compact();
-     }
+
+    // ... rest of the class remains the same
+//}
+
+    //     public String GenerateToken(String username) {
+//        Map<String, Object> claims = new HashMap<>();
+//         return Jwts.builder()
+//                 .claims()
+//                 .add(claims)
+//                 .subject(username)
+//                 .issuedAt(new Date(System.currentTimeMillis()))
+//                 .expiration(new Date(System.currentTimeMillis() + 2000 * 60 * 60 * 10 ))
+//                 .and()
+//                 .signWith(getkey())
+//                 .compact();
+//     }
+public String GenerateToken(String username) {
+    Users user = userRepository.findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    Map<String, Object> claims = new HashMap<>();
+    claims.put("roles", List.of("ROLE_" + user.getRole().name())); // important!
+
+    return Jwts.builder()
+            .claims()
+            .add(claims)
+            .subject(username)
+            .issuedAt(new Date(System.currentTimeMillis()))
+            .expiration(new Date(System.currentTimeMillis() + 2000 * 60 * 60 * 10))
+            .and()
+            .signWith(getkey())
+            .compact();
+}
+
     private SecretKey getkey() {
         byte[] keyByte = Decoders.BASE64.decode(secreteKey);
         return Keys.hmacShaKeyFor(keyByte);
@@ -53,7 +91,7 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    private Claims extractAllClaims(String token) {
+    Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getkey())
                 .build()

@@ -1,4 +1,4 @@
-package org.example.service;
+package org.example.service.teacherService;
 
 import org.example.dto.requests.AdminInitiateTeacher;
 

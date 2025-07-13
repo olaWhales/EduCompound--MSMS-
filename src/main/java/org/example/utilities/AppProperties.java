@@ -1,4 +1,4 @@
-package org.example.service; // Adjust package as needed
+package org.example.utilities; // Adjust package as needed
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,5 +11,4 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
     private String baseUrl;
-
 }

@@ -51,9 +51,21 @@ public class SecurityConfig {
 //            )
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/api/superadmin/tenants/registration").hasRole("SUPER_ADMIN")
-                    .requestMatchers("/user/login", "/api/teacher/register", "/api/teacher/register/teacher", "/error", "/login", "/api/tenant/setup-password").permitAll()
-                    .requestMatchers("/api/teacher/invite", "/api/teacher/update/**", "/api/teacher/delete/**").hasRole("ADMIN")
-                    .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**").permitAll()
+                    .requestMatchers("/user/login",
+                            "/api/teacher/register",
+                            "/api/teacher/register/teacher",
+                            "/error",
+                            "/login",
+                            "/api/tenant/setup-password").permitAll()
+                    .requestMatchers("/api/teacher/invite",
+                            "/api/teacher/update/**",
+                            "/api/teacher/delete/",
+                            "/api/session/create",
+                            "/api/classes/create").hasRole("ADMIN")
+                    .requestMatchers("/resources/**",
+                            "/static/**",
+                            "/css/**",
+                            "/js/**").permitAll()
                     .requestMatchers("/", "/index.html", "/**").permitAll() // Allow root and static pages temporarily
                     .anyRequest().authenticated()
             )

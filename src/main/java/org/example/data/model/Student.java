@@ -31,4 +31,9 @@ public class Student {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "parent_id")
+    private Parent parent;
+
 }

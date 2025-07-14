@@ -2,7 +2,7 @@ package org.example.controller;
 
 import lombok.AllArgsConstructor;
 import org.example.dto.requests.PasswordSetupRequest;
-import org.example.service.tenantService.PasswordSetupService;
+import org.example.services.tenantService.PasswordSetupService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

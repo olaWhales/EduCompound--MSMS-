@@ -1,8 +1,8 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.dto.requests.TenantCreationRequest;
-import org.example.service.tenantService.TenantRegistration;
+import org.example.dto.requests.teacherRequest.TenantCreationRequest;
+import org.example.services.tenantService.TenantRegistration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

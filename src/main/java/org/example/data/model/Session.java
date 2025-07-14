@@ -2,6 +2,8 @@ package org.example.data.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.Year;
 import java.util.Date;
 
 @Entity
@@ -18,7 +20,18 @@ public class Session {
     @JoinColumn(name = "tenant_id")
     private AdminTenant adminTenant;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "branch_id")
+    private SchoolBranch schoolBranch; // Optional — can be null
+
+    private String term;
+    private String sessionYear;
+    @Temporal(TemporalType.DATE)
     private Date startDate;
+
+    @Temporal(TemporalType.DATE)
     private Date endDate;
+
+    @Column(nullable = false)
+    private boolean isActive;  // ✅ Add this line here
 }

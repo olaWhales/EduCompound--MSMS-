@@ -3,6 +3,8 @@ package org.example.data.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -21,7 +23,7 @@ public class Parent {
     @JoinColumn(name = "user_id")
     private Users users;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private List<Student> students;
+
 }

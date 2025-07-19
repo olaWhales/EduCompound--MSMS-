@@ -12,8 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
 @RequiredArgsConstructor
 public class ClassServiceImp implements ClassService {
@@ -28,12 +26,6 @@ public class ClassServiceImp implements ClassService {
         Users user = principal.users();
 
         AdminTenant tenant = user.getAdminTenant();
-
-        // Validate session
-//        Session session = sessionRepository.findByAdminTenantAndSessionYearAndTerm(
-//                tenant, request.getSessionYear(), request.getTerm()
-//        ).orElseThrow(() -> new IllegalArgumentException("Session not found for the given year and term,please select correct term or session you are in"));
-// Remove sessionYear and term from request
         Session session = sessionRepository.findByAdminTenantAndIsActiveTrue(tenant)
                 .orElseThrow(() -> new IllegalArgumentException("No active session found for this tenant"));
 

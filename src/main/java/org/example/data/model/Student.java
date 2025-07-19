@@ -3,6 +3,7 @@ package org.example.data.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -11,8 +12,9 @@ import java.util.Date;
 @Builder
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long studentId;
+    @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
+    private UUID studentId;
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")
@@ -35,5 +37,10 @@ public class Student {
     @ManyToOne(optional = true)
     @JoinColumn(name = "parent_id")
     private Parent parent;
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "user_id")
+    private Users users;
+
 
 }

@@ -13,9 +13,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface SessionRepository extends JpaRepository<Session, Long> {
+public interface SessionRepository extends JpaRepository<Session, UUID> {
     boolean existsByAdminTenantAndStartDateLessThanEqualAndEndDateGreaterThanEqual(AdminTenant adminTenant, Date endDate, Date startDate);
 
     boolean existsByAdminTenantAndStartDateAndEndDate(AdminTenant adminTenant, Date startDate, Date endDate);
@@ -35,12 +36,12 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE Session s SET s.isActive = false WHERE s.adminTenant.tenantId = :tenantId AND s.schoolBranch = :branch AND s.isActive = true")
-    void deactivateAllForTenantAndBranch(@Param("tenantId") Long tenantId, @Param("branch") SchoolBranch branch);
+    void deactivateAllForTenantAndBranch(@Param("tenantId") UUID tenantId, @Param("branch") SchoolBranch branch);
 
 
     // ✅ Custom JPQL query to deactivate all active sessions for a tenant
     @Transactional
     @Modifying
     @Query("UPDATE Session s SET s.isActive = false WHERE s.adminTenant.tenantId = :tenantId AND s.isActive = true")
-    void deactivateAllForTenant(@Param("tenantId") Long tenantId);
+    void deactivateAllForTenant(@Param("tenantId") UUID tenantId);
 }

@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +32,7 @@ public class TeacherListServiceImpl implements TeacherListService {
         } else {
             throw new IllegalStateException("Unsupported principal type");
         }
-        Long adminTenantId = currentUser.getAdminTenant().getTenantId();
+        UUID adminTenantId = currentUser.getAdminTenant().getTenantId();
         return userRepository.findByRoleAndAdminTenant_TenantId(Role.TEACHER, adminTenantId)
                 .stream()
                 .map(user -> TeacherListResponse.builder()

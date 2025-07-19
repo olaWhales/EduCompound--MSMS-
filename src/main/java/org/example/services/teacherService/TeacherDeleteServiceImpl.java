@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -24,7 +26,7 @@ public class TeacherDeleteServiceImpl implements TeacherDeleteService {
     public TeacherDeleteResponse deleteTeacher(String email) {
         UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Users currentUser = userPrincipal.users();
-        Long adminTenantId = currentUser.getAdminTenant().getTenantId();
+        UUID adminTenantId = currentUser.getAdminTenant().getTenantId();
 
         Users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Teacher not found with email: " + email));

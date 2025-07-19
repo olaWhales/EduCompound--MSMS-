@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.Year;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -13,8 +14,9 @@ import java.util.Date;
 @Builder
 public class Session {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long sessionId;
+    @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
+    private UUID sessionId;
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")

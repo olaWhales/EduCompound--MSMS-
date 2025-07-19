@@ -4,11 +4,12 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Builder
 public class SessionResponse {
-    private Long sessionId;
+    private UUID sessionId;
     private String message;
     private Date createdAt;
 }

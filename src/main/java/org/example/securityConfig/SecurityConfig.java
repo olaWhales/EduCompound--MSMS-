@@ -61,7 +61,8 @@ public class SecurityConfig {
                             "/api/teacher/update/**",
                             "/api/teacher/delete/",
                             "/api/session/create",
-                            "/api/classes/create").hasRole("ADMIN")
+                            "/api/classes/create",
+                            "/api/students/register").hasRole("ADMIN")
                     .requestMatchers("/resources/**",
                             "/static/**",
                             "/css/**",

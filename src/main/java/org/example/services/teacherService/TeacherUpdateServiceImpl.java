@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.UUID;
 
 import static org.example.utilities.Utilities.AUTHENTICATION_NOT_FOUND_MESSAGE;
 import static org.example.utilities.Utilities.AUTHENTICATION_REQUIRE_MESSAGE;
@@ -36,7 +37,7 @@ public class TeacherUpdateServiceImpl implements TeacherUpdateService {
         Users currentUser = userPrincipal.users();
         if (userRepository.findByEmail(currentUser.getEmail()).isEmpty()) {throw new IllegalArgumentException(AUTHENTICATION_NOT_FOUND_MESSAGE);}
 //        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long adminTenantId = currentUser.getAdminTenant().getTenantId();
+        UUID adminTenantId = currentUser.getAdminTenant().getTenantId();
         log.info("this is adminTenant {} " , adminTenantId);
 
         Users user = userRepository.findByEmail(email)

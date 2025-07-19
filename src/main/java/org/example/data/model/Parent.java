@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -12,8 +13,9 @@ import java.util.List;
 @Builder
 public class Parent {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long parentId;
+    @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
+    private UUID parentId;
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")

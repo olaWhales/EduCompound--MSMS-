@@ -7,11 +7,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<Users, String> {
+public interface UserRepository extends JpaRepository<Users, UUID> {
     Optional<Users> findByEmail(String email);
 
     List<Users> findByRole(Role role);
-    List<Users> findByRoleAndAdminTenant_TenantId(Role role, Long tenantId); // Updated to use tenantId
+    List<Users> findByRoleAndAdminTenant_TenantId(Role role, UUID tenantId); // Updated to use tenantId
+
+    boolean existsByEmail(String email);
 }

@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class ClassRequest {
     @NotBlank(message = "Class name is required")
@@ -15,5 +17,5 @@ public class ClassRequest {
 //    @NotBlank(message = "Term is required")
 //    private String term;
 
-    private Long branchId; // optional
+    private UUID branchId; // optional
 }

@@ -3,6 +3,7 @@ package org.example.data.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -10,9 +11,11 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class ReportCard {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reportId;
+    @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
+    private UUID reportId;
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")

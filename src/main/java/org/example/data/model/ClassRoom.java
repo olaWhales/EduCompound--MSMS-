@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -14,8 +16,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ClassRoom {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long classId;
+    @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
+    private UUID classId;
 
     @NotBlank(message = "Class name is required")
     private String className;

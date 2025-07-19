@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -15,8 +16,9 @@ import java.util.Date;
 @Builder
 public class Fee {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long feeId;
+    @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
+    private UUID feeId;
 
     @ManyToOne
     @JoinColumn(name = "tenant_id")

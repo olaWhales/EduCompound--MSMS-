@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 public class SessionRequest {
@@ -26,5 +27,5 @@ public class SessionRequest {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
-    private Long branchId; // Optional
+    private UUID branchId; // Optional
 }

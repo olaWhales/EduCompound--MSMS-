@@ -1,5 +1,6 @@
 package org.example.data.repositories;
 
+import aj.org.objectweb.asm.commons.InstructionAdapter;
 import org.example.data.model.Role;
 import org.example.data.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,8 @@ public interface UserRepository extends JpaRepository<Users, UUID> {
     List<Users> findByRoleAndAdminTenant_TenantId(Role role, UUID tenantId); // Updated to use tenantId
 
     boolean existsByEmail(String email);
+
+    InstructionAdapter findByEmailIgnoreCase(String loginId);
+
+    Optional<Users> findByStudentCode(String loginId);
 }

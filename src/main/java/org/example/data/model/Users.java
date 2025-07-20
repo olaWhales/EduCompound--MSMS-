@@ -35,8 +35,15 @@ public class Users {
     private Role role;
 
 //    i just added this for student login
-    @Column(unique = true, nullable = false)
-    private String username; // 👈 Will hold studentCode for students
+//    @Column(unique = true, nullable = false)
+//    private String username; // 👈 Will hold studentCode for students
+
+    @Column(name = "recovery_Email")
+    private String recoveryEmail ;
+
+    @Column(unique = true)
+    private String studentCode;
+
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)

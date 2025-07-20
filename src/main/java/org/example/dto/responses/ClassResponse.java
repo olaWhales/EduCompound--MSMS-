@@ -11,5 +11,6 @@ public class ClassResponse {
 //    private Long classId;
     private String className;
     private String sessionYear;
+    private String term;
     private String message;
 }

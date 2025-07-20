@@ -44,4 +44,6 @@ public interface SessionRepository extends JpaRepository<Session, UUID> {
     @Modifying
     @Query("UPDATE Session s SET s.isActive = false WHERE s.adminTenant.tenantId = :tenantId AND s.isActive = true")
     void deactivateAllForTenant(@Param("tenantId") UUID tenantId);
+
+//    Optional<Session> findCurrentSessionForTenant(AdminTenant tenant);
 }

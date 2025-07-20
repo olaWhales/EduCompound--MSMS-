@@ -58,6 +58,7 @@ public class ClassServiceImp implements ClassService {
         return ClassResponse.builder()
                 .className(schoolClass.getClassName())
                 .sessionYear(session.getSessionYear())
+                .term(session.getTerm())
                 .message("Class created successfully")
                 .build();
     }

@@ -22,6 +22,7 @@ public class Student {
 
     private String firstName;
     private String lastName;
+    private String middleName;
 
     @ManyToOne
     @JoinColumn(name = "class_id")
@@ -30,6 +31,9 @@ public class Student {
     @ManyToOne
     @JoinColumn(name = "session_id")
     private Session session;
+
+    @Column(nullable = false, unique = true)
+    private String studentCode; // ✅ Unique per tenant
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -41,6 +45,9 @@ public class Student {
     @OneToOne(optional = true)
     @JoinColumn(name = "user_id")
     private Users users;
+
+    @Column(name = "term")
+    private String term;
 
 
 }

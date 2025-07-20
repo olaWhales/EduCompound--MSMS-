@@ -166,7 +166,7 @@ public class SessionServiceImp implements SessionService {
 
         // 7. Response
         return SessionResponse.builder()
-                .sessionId(session.getSessionId())
+//                .sessionId(session.getSessionId())
                 .message("Session created successfully")
                 .createdAt(new Date())
                 .build();

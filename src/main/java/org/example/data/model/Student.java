@@ -1,5 +1,6 @@
 package org.example.data.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
@@ -38,9 +39,15 @@ public class Student {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "parent_id")
+//    @ManyToOne(optional = true)
+//    @JoinColumn(name = "parent_id")
+//    private Parent parent;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id", nullable = true)
+    @JsonBackReference
     private Parent parent;
+
 
     @OneToOne(optional = true)
     @JoinColumn(name = "user_id")
@@ -49,5 +56,7 @@ public class Student {
     @Column(name = "term")
     private String term;
 
+    @Enumerated
+    private Gender gender ;
 
 }

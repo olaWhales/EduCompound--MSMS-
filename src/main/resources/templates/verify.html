@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Parent Account Activation</title>
+    <meta charset="UTF-8"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input[type="email"],
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+        }
+
+        input[readonly] {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.95em;
+        }
+
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+<h2>Activate Your Parent Account</h2>
+
+<form th:action="@{/parent/verify}" method="post" th:object="${verificationRequest}">
+    <label for="email">Email Address</label>
+    <input type="email" id="email" th:field="*{email}" readonly required/>
+
+    <label for="token">Verification Code</label>
+    <input type="text" id="token" th:field="*{token}" placeholder="Enter your code" required/>
+
+    <label for="password">Set Password</label>
+    <input type="password" id="password" th:field="*{password}" placeholder="Enter your password" required/>
+
+    <label for="verifyPassword">Verify Password</label>
+    <input type="password" id="verifyPassword" th:field="*{verifyPassword}" placeholder="Verify your password" required/>
+
+    <button type="submit">Activate Account</button>
+</form>
+
+<hr/>
+
+<form th:action="@{/parent/resend-token}" method="post">
+    <label for="resendEmail">Didn’t receive code?</label>
+    <input type="email" id="resendEmail" name="email" th:value="${verificationRequest.email}" readonly required/>
+    <button type="submit">Resend Code</button>
+</form>
+
+<div class="message error" th:if="${error}" th:text="${error}"></div>
+<div class="message success" th:if="${success}" th:text="${success}"></div>
+<div class="message info" th:if="${message}" th:text="${message}"></div>
+
+</body>
+</html>

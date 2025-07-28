@@ -34,10 +34,6 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-//    i just added this for student login
-//    @Column(unique = true, nullable = false)
-//    private String username; // 👈 Will hold studentCode for students
-
     @Column(name = "recovery_Email")
     private String recoveryEmail ;
 
@@ -48,4 +44,10 @@ public class Users {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date createdAt;
+
+    @Column(nullable = false)
+    private boolean verified = false;
+
+    private String phone ;
+
 }

@@ -9,9 +9,16 @@ import java.util.UUID;
 public interface TokenRepository extends JpaRepository<Token, UUID> {
     Optional<Token> findByTokenAndEmail(String token, String email);
 
-    void deleteByTokenAndEmail(String token, String email); // Custom delete method
+//    void deleteByTokenAndEmail(String token, String email); // Custom delete method
 
     Optional<Token> findByToken(String token);
 
     Optional<Token> findByEmail(String email);
+
+    void deleteByEmail(String email);
+
+    Optional<Token> findByEmailAndToken(String email, String token);
+//    Optional<Token> findByEmail(String email);
+    Optional<Token> findTopByEmailOrderByCreatedAtDesc(String email);
+
 }

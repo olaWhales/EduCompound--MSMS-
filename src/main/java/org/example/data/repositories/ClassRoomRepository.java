@@ -7,14 +7,18 @@ import org.example.data.model.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
 public interface ClassRoomRepository extends JpaRepository<ClassRoom, UUID> {
-    boolean existsByAdminTenantAndClassName(AdminTenant tenant, String className);
+//    boolean existsByAdminTenantAndClassName(AdminTenant tenant, String className);
 
     boolean existsByAdminTenantAndSessionAndClassNameIgnoreCase(AdminTenant tenant, Session session, @NotBlank(message = "Class name is required") String className);
 
     Optional<ClassRoom> findByAdminTenantAndSessionAndClassNameIgnoreCase(AdminTenant tenant, Session session, String className);
+
+    Set<ClassRoom> findByClassNameInAndAdminTenant_TenantId(List<String> classNames, UUID tenantId);
 }

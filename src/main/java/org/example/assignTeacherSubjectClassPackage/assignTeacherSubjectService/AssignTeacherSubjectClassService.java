@@ -1,0 +1,8 @@
+package org.example.assignTeacherSubjectClassPackage.assignTeacherSubjectService;
+
+import org.example.assignTeacherSubjectClassPackage.dto.assignTeacherSubjectRequest.AssignTeacherSubjectClassRequest;
+import org.example.assignTeacherSubjectClassPackage.dto.assignTeacherSubjectResponse.AssignTeacherSubjectClassResponse;
+
+public interface AssignTeacherSubjectClassService {
+    AssignTeacherSubjectClassResponse assign(AssignTeacherSubjectClassRequest request);
+}

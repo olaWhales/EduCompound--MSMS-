@@ -1,6 +1,7 @@
 package org.example.data.repositories;
 
 import aj.org.objectweb.asm.commons.InstructionAdapter;
+import org.example.data.model.AdminTenant;
 import org.example.data.model.Role;
 import org.example.data.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,12 +15,14 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<Users, UUID> {
     Optional<Users> findByEmail(String email);
 
-    List<Users> findByRole(Role role);
+//    List<Users> findByRole(Role role);
     List<Users> findByRoleAndAdminTenant_TenantId(Role role, UUID tenantId); // Updated to use tenantId
 
     boolean existsByEmail(String email);
 
-    InstructionAdapter findByEmailIgnoreCase(String loginId);
+//    InstructionAdapter findByEmailIgnoreCase(String loginId);
 
     Optional<Users> findByStudentCode(String loginId);
+
+    boolean existsByEmailAndAdminTenant(String email, AdminTenant tenant);
 }

@@ -2,6 +2,9 @@ package org.example.data.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
 
@@ -29,4 +32,13 @@ public class Token {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date expiresAt;
+
+    private boolean verified;
+
+    public boolean isExpired() {
+        return expiresAt.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime()
+                .isBefore(LocalDateTime.now());
+    }
 }

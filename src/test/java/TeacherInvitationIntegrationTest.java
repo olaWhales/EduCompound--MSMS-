@@ -3,8 +3,8 @@ import org.example.data.model.*;
 import org.example.data.repositories.AdminTenantRepository;
 import org.example.data.repositories.TokenRepository;
 import org.example.data.repositories.UserRepository;
-import org.example.dto.requests.AdminInitiateTeacher;
-import org.example.services.teacherService.TeacherInvitationService;
+import org.example.teacherPackage.dto.teacherRequest.AdminInitiateTeacher;
+import org.example.teacherPackage.teacherService.TeacherInvitationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,10 +12,8 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertFalse;
 
 @SpringBootTest(classes = EduCompoundApplication.class)

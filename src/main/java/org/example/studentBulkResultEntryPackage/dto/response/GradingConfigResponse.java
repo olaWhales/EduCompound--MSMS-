@@ -7,7 +7,9 @@ import java.util.UUID;
 @Data
 public class GradingConfigResponse {
     private UUID id;
-    private String grade;
-    private Double minScore;
-    private Double maxScore;
+    private String gradeName;
+    private Integer minScore;
+    private Integer maxScore;
+    private String remark;
+    private Boolean isActive;
 }

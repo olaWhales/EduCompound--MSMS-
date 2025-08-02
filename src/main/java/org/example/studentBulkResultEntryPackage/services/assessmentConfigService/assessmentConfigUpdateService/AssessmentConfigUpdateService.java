@@ -1,0 +1,10 @@
+package org.example.studentBulkResultEntryPackage.services.assessmentConfigService.assessmentConfigUpdateService;
+
+import org.example.studentBulkResultEntryPackage.dto.request.assessmentConfigRequest.AssessmentConfigRequest;
+import org.example.studentBulkResultEntryPackage.dto.request.assessmentConfigRequest.ConfigurationRequest;
+import org.example.studentBulkResultEntryPackage.dto.response.AssessmentConfigResponse;
+import org.example.studentBulkResultEntryPackage.dto.response.AssessmentGroupResponse;
+
+public interface AssessmentConfigUpdateService {
+    AssessmentGroupResponse updateAssessmentConfig(String groupName, AssessmentConfigRequest request);
+}

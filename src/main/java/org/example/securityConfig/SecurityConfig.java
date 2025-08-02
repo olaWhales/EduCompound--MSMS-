@@ -65,7 +65,15 @@ public class SecurityConfig {
                             "/api/students/register",
                             "/parent/register",
                             "/api/assessment-configs/",
-                            "/api/assessment_active_update-configs/**").hasRole("ADMIN")
+                            "/api/assessment_active_update-configs/**",
+                            "/api/getAll/assessment-configs",
+                            "/api/getSingle/assessment-configs/**",
+                            "/api/assessment-configs/delete/**",
+                            "/api/grading-config",
+                            "/api/update/grading-config/**",
+                            "/api/getAll/grading-configs",
+                            "/api/getById/grading-configs/**",
+                            "/api/grading-config/deactivate/**").hasRole("ADMIN")
                     .requestMatchers("/resources/**",
                             "/static/**",
                             "/css/**",

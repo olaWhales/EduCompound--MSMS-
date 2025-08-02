@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.studentBulkResultEntryPackage.data.model.AssessmentType;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -15,18 +15,20 @@ import java.util.UUID;
 public class AssessmentConfigResponse {
     private UUID id; // Added ID
     private String name;
+    private AssessmentType type;
+    //    private int numberOfCAs; // e.g., 1, 2, or 3
+//    private int numberOfExam ;
     private Integer weight;
     private Boolean isRequired;
-    private Boolean isActive ;
-//    private LocalDateTime createdAt ;
+    private boolean isActive;
 
-
-    public AssessmentConfigResponse(UUID id, String name, Integer weight, boolean isRequired, boolean isActive) {
-        this.id = id;
-        this.name = name;
-        this.weight = weight;
-        this.isRequired = isRequired;
-        this.isActive = isActive;
-    }
-
+//    public AssessmentConfigResponse(UUID id, String name, int numberOfCAs, int numberOfExam, Integer weight, boolean isRequired) {
+//        this.id = id;
+//        this.name = name;
+//        this.numberOfCAs = numberOfCAs;
+//        this.numberOfExam = numberOfExam;
+//        this.weight = weight;
+//        this.isRequired = isRequired;
+////        this.isActive = isActive;
+//    }
 }

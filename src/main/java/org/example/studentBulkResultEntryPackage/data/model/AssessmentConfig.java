@@ -1,5 +1,6 @@
 package org.example.studentBulkResultEntryPackage.data.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "assessment_config")
 public class AssessmentConfig {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -26,12 +28,22 @@ public class AssessmentConfig {
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
+    // Group this config belongs to (e.g. "2024 First Term Config A")
+    private String groupName;
+
     @NotBlank(message = "Assessment name is mandatory")
-    private String name; // e.g., CA1, Test1
+    private String name;
 
     @NotNull(message = "Weight is mandatory")
     @Min(value = 0, message = "Weight must be non-negative")
     private Integer weight;
+
+    private int numberOfCAs; // e.g., 1, 2, or 3
+
+    private int numberOfExam ;
+
+    @JsonProperty("type")
+    private AssessmentType type;
 
     @NotNull(message = "Required status is mandatory")
     private Boolean isRequired;
@@ -43,5 +55,10 @@ public class AssessmentConfig {
     private AdminTenant tenant;
 
     @Column(updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

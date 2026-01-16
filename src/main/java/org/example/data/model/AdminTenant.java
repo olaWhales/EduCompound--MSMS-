@@ -20,6 +20,8 @@ public class AdminTenant {
 
     private String subdomain;
 
+    @Column(nullable = false)
+    private boolean active = false; // ✅ REQUIRED
 //    private String email;
 
     @Temporal(TemporalType.TIMESTAMP)

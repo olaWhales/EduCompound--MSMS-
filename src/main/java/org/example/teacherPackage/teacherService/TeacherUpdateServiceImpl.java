@@ -17,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.example.utilities.Utilities.AUTHENTICATION_NOT_FOUND_MESSAGE;
-import static org.example.utilities.Utilities.AUTHENTICATION_REQUIRE_MESSAGE;
+import static org.example.utilities.Utilities.*;
 
 @Service
 @AllArgsConstructor
@@ -36,18 +35,11 @@ public class TeacherUpdateServiceImpl implements TeacherUpdateService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         Users currentUser = userPrincipal.users();
         if (userRepository.findByEmail(currentUser.getEmail()).isEmpty()) {throw new IllegalArgumentException(AUTHENTICATION_NOT_FOUND_MESSAGE);}
-//        Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UUID adminTenantId = currentUser.getAdminTenant().getTenantId();
-        log.info("this is adminTenant {} " , adminTenantId);
-
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Teacher not found with email: " + email));
-        log.info("this is user from repository {} " , user);
-
-        Teacher teacher = teacherRepository.findByUsers(user).orElseThrow(() -> new IllegalArgumentException("Teacher record not found"));
-        log.info("this is user role {} ", teacher);
+        Users user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException(TEACHER_NOT_FOUND_WITH_EMAIL + email));
+        Teacher teacher = teacherRepository.findByUsers(user).orElseThrow(() -> new IllegalArgumentException(TEACHER_RECORD_NOT_FOUND_FOR_EMAIL));
         // Step 3: Ensure the teacher belongs to the same tenant as the admin
-        if (!teacher.getAdminTenant().getTenantId().equals(adminTenantId)) {throw new SecurityException("Unauthorized: Teacher does not belong to your tenant");}
+        if (!teacher.getAdminTenant().getTenantId().equals(adminTenantId)) {throw new SecurityException(UNAUTHORIZED_TEACHER_DOES_NOT_BELONG_TO_YOUR_TENANT);}
         // Step 4: Perform update
         user.setEmail(request.getEmail() != null ? request.getEmail() : user.getEmail());
         user.setFirstName(request.getFirstName() != null ? request.getFirstName() : user.getFirstName());
@@ -57,7 +49,7 @@ public class TeacherUpdateServiceImpl implements TeacherUpdateService {
         userRepository.save(user);
 
         return TeacherUpdateResponse.builder()
-                .message("Teacher updated successfully")
+                .message(TEACHER_UPDATED_SUCCESSFULLY)
                 .updatedAt(new Date())
                 .build();
     }

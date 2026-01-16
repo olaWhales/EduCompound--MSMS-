@@ -1,5 +1,6 @@
 package org.example.studentPackage.dto.studentRequest;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -9,17 +10,31 @@ import java.util.UUID;
 
 @Data
 public class StudentRegisterRequest {
-    private String firstName;
-    private String lastName;
-    private String middleName ;
 
+    @NotNull(message = "Firstname is required")
+    private String firstName;
+    @NotNull(message = "Lastname is required")
+    private String lastName;
+    @NotNull(message = "Middlename is required")
+    private String middleName;
     @NotNull(message = "Gender is required")
     private Gender gender;
-    private String className;     // e.g., "Grade 5"
+    @NotNull(message = "Class name is required")
+    private String className;
+    private Boolean activateLogin; // admin choice
 
-    private Boolean createLoginAccount; // optional - if true, email/password must be present
-    private UUID branchId; // optional
+    private UUID branchId;
+
+    private Boolean createLoginAccount;
     @Email(message = "Invalid email format")
-    private String studentEmail; // Optiona
-    private String password; // Optional, only required if createLoginAccount is true
+    private String studentEmail;
+    private String password;
+    @AssertTrue(message = "studentEmail and password are required when createLoginAccount is true")
+    public boolean isLoginDataValid() {
+        if (Boolean.TRUE.equals(createLoginAccount)) {
+            return studentEmail != null && !studentEmail.isBlank()
+                    && password != null && !password.isBlank();
+        }
+        return true;
+    }
 }

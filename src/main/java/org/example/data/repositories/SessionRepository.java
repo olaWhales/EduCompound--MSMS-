@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public interface SessionRepository extends JpaRepository<Session, UUID> {
     boolean existsByAdminTenantAndStartDateLessThanEqualAndEndDateGreaterThanEqual(AdminTenant adminTenant, Date endDate, Date startDate);
 
     boolean existsByAdminTenantAndStartDateAndEndDate(AdminTenant adminTenant, Date startDate, Date endDate);
+
     boolean existsByAdminTenantAndStartDateAndEndDateAndSchoolBranch(
             AdminTenant tenant,
             Date startDate,
@@ -45,5 +47,7 @@ public interface SessionRepository extends JpaRepository<Session, UUID> {
     @Query("UPDATE Session s SET s.isActive = false WHERE s.adminTenant.tenantId = :tenantId AND s.isActive = true")
     void deactivateAllForTenant(@Param("tenantId") UUID tenantId);
 
-//    Optional<Session> findCurrentSessionForTenant(AdminTenant tenant);
+    List<Session> findByAdminTenant(AdminTenant adminTenant);
 }
+//    Optional<Session> findCurrentSessionForTenant(AdminTenant tenant);
+

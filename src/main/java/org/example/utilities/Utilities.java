@@ -3,7 +3,8 @@ package org.example.utilities;
 import java.security.SecureRandom;
 
 public class Utilities {
-    public static String REGISTRATION_SUCCESS = "Registration successful";
+    public static String ADMIN_EMAIL_ALREADY_REGISTERED_AND_PASSWORD_IS_SET = "Admin email already registered and password is set.";
+    public static String REGISTRATION_SUCCESS = "Registration successful, please check your email for the password setup";
     public static String AUTHENTICATION_REQUIRE_MESSAGE = "Authentication required with UserPrincipal";
     public static String AUTHENTICATION_NOT_FOUND_MESSAGE = "Authenticated user not found";
     public static String USER_IS_NOT_AN_ADMIN_MESSAGE = "User is not an admin";
@@ -15,6 +16,44 @@ public class Utilities {
     public static String INVALID_OR_EXPIRE_TOKEN = "Invalid or expired token";
     public static String PASSWORD_IS_REQUIRE_MESSAGE = "Password is required";
     public static String ADMIN_ALREADY_REGISTERED_MESSAGE = "Admin email already registered";
+    public static String TENANT_SETUP_PASSWORD = "http://localhost:8080/api/tenant/setup-password?token=%s&email=%s";
+    public static String CLICK_THE_LINK_TO_SETUP_THE_PASSWORD = "<html><body><h2>Password Setup</h2><p>Click <a href='%s'>here</a> to set your password.</p></body></html>";
+    public static String SET_YOUR_PASSWORD = "Set Your Password";
+    public static String PASSWORD_SETUP_EMAIL_SENT_TO = "Password setup email sent to: {}";
+    public static String RESENT_PASSWORD_SETUP_EMAIL_TO = "Resent password setup email to: {}";
+    public static String TEACHER_NOT_FOUND_WITH_EMAIL = "Teacher not found with email: ";
+    public static String TEACHER_RECORD_NOT_FOUND_FOR_EMAIL = "Teacher record not found for email: ";
+    public static String TEACHER_UPDATED_SUCCESSFULLY = "Teacher updated successfully";
+    public static String UNAUTHORIZED_ACCESS_TEACHER_DOES_NOT_BELONG_TO_YOUR_TENANT = "Unauthorized access: Teacher does not belong to your tenant";
+    public static String TEACHER_DELETED_SUCCESSFULLY = "Teacher deleted successfully";
+    public static String API_TEACHER_REGISTER_TEACHER_TOKEN = "%s/api/teacher/register/teacher?token=%s&email=%s";
+    public static String HTTP_LOCALHOST_8080 = "http://localhost:8080";
+    public static String EMAIL_ALREADY_REGISTERED = "Email already registered";
+    public static String PROCESSING_TEACHER_REGISTRATION_FOR_EMAIL = "Processing teacher registration for email: {}";
+    public static String ADMINTENANT_NOT_SET_OR_NOT_PERSISTED_IN_TOKEN = "AdminTenant not set or not persisted in token!";
+    public static String ADMINTENANT_NOT_FOUND_IN_DB = "AdminTenant not found in DB";
+    public static String TEACHER_REGISTERED_SUCCESSFULLY = "Teacher registered successfully: {}";
+    public static String ERROR_DURING_TEACHER_REGISTRATION = "Error during teacher registration: {}";
+    public static String UNAUTHORIZED_TEACHER_DOES_NOT_BELONG_TO_YOUR_TENANT = "Unauthorized: Teacher does not belong to your tenant";
+    public static String UNSUPPORTED_PRINCIPAL_TYPE = "Unsupported principal type";
+    public static String USER_PRINCIPAL_IS_NOT_AUTHENTICATED_PROPERLY = "User principal is not authenticated properly";
+    public static String SUBJECT_NOT_FOUND_OR_NOT_OWNED_BY_THIS_TENANT = "Subject not found or not owned by this tenant.";
+    public static String NO_MATCHING_CLASS_FOUND_FOR_THE_GIVEN_NAMES_UNDER_THIS_TENANT = "No matching class found for the given names under this tenant.";
+    public static String NO_ACTIVE_SESSION_FOR_TENANT = "No active session for tenant";
+    public static String CLASS_NOT_FOUND_FOR_THE_SESSION_AND_CLASSNAME = "Class_not_found_for_the_session_and_className";
+    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
+    public static String BRANCH_NOT_FOUND = "Branch not found";
+    public static String BRANCH_DOES_NOT_BELONG_TO_YOUR_SCHOOL = "Branch does not belong to your school";
+    public static String EMAIL_AND_PASSWORD_ARE_REQUIRED_TO_CREATE_STUDENT_LOGIN_ACCOUNT = "Email and password are required to create student login account";
+    public static String A_USER_WITH_THIS_STUDENT_EMAIL_ALREADY_EXISTS = "A user with this student email already exists";
+    public static String YOUR_STUDENT_CODE_NUMBER_IS = "Your student code number is => ";
+    public static String STUDENT_REGISTERED_SUCCESSFULLY = "Student registered successfully";
+//    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
+//    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
+//    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
+//    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
+//    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
+//
 
     public static String REGISTRATION_INVITATION_MESSAGE = "<html>" +
             "<body>" +

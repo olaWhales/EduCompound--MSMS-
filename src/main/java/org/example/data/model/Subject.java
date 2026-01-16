@@ -27,8 +27,6 @@ public class Subject {
 
     private String description;
 
-//    private boolean isElective = false;
-
     @ManyToMany
     @JoinTable(
         name = "subject_classes",

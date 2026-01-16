@@ -3,6 +3,7 @@ package org.example.data.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.Year;
 import java.util.Date;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class Session {
 
     @ManyToOne
     @JoinColumn(name = "branch_id")
-    private SchoolBranch schoolBranch; // Optional — can be null
+    private SchoolBranch schoolBranch;
 
     private String term;
     private String sessionYear;
@@ -34,6 +35,19 @@ public class Session {
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
+//    private boolean active;
+    private Instant deletedAt;
+    private UUID deletedBy;
+
+
     @Column(nullable = false)
-    private boolean isActive;  // ✅ Add this line here
+    private boolean isActive = true;
+
+
+//    public boolean hasAcademicRecords() {
+//        return !students.isEmpty()
+//                || !results.isEmpty()
+//                || !attendances.isEmpty();
+//    }
+
 }

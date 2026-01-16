@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.Instant;
 import java.util.Date;
 
 import static org.example.utilities.Utilities.*;
@@ -35,17 +36,11 @@ public class TenantRegistrationImp implements TenantRegistration {
 public TenantCreationResponse createTenant(TenantCreationRequest request) {
     // Step 1: Get the current authenticated superadmin
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication == null || !authentication.isAuthenticated()) {
-        throw new IllegalArgumentException(AUTHENTICATION_REQUIRE_MESSAGE);
-    }
-
+    if (authentication == null || !authentication.isAuthenticated()) {throw new IllegalArgumentException(AUTHENTICATION_REQUIRE_MESSAGE);}
     UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
     Users currentUser = userPrincipal.users();
 
-    if (userRepository.findByEmail(currentUser.getEmail()).isEmpty()) {
-        throw new IllegalArgumentException(AUTHENTICATION_NOT_FOUND_MESSAGE);
-    }
-
+    if (userRepository.findByEmail(currentUser.getEmail()).isEmpty()) {throw new IllegalArgumentException(AUTHENTICATION_NOT_FOUND_MESSAGE);}
     // Step 2: Check if admin email already exists
     Users existingAdmin = userRepository.findByEmail(request.getAdminEmail()).orElse(null);
 
@@ -59,9 +54,7 @@ public TenantCreationResponse createTenant(TenantCreationRequest request) {
                 .message("Admin already exists. Resent password setup link.")
                 .dateCreated(new Date())
                 .build();
-        } else {
-            throw new IllegalArgumentException("Admin email already registered and password is set.");
-        }
+        } else {throw new IllegalArgumentException(ADMIN_EMAIL_ALREADY_REGISTERED_AND_PASSWORD_IS_SET);}
     }
 
     // Step 3: Save the tenant
@@ -79,8 +72,12 @@ public TenantCreationResponse createTenant(TenantCreationRequest request) {
             .firstName(request.getAdminFirstName())
             .lastName(request.getAdminLastName())
             .role(Role.ADMIN)
+            .verified(true)   // ✅ ADMIN never email-verifies
+            .active(false)    // ✅ SUPER_ADMIN activates later
             .createdAt(new Date())
+            .statusUpdatedAt(Instant.now())
             .build();
+
     userRepository.save(newAdmin);
 
     // Step 5: Send password setup link
@@ -88,6 +85,7 @@ public TenantCreationResponse createTenant(TenantCreationRequest request) {
 
     // Step 6: Build response
     return TenantCreationResponse.builder()
+            .tenantId(savedTenant.getTenantId())
             .schoolName(savedTenant.getSchoolName())
             .subDomain(savedTenant.getSubdomain())
             .message(REGISTRATION_SUCCESS)

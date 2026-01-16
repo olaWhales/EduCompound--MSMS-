@@ -49,9 +49,8 @@ public class TeacherInvitationServiceImpl implements TeacherInvitationService {
 
         // Log the base URL
 //        log.info("Base URL: {}", appProperties.getBaseUrl());
-        String baseUrl = appProperties.getBaseUrl() != null ? appProperties.getBaseUrl() : "http://localhost:8080";
-        String registrationLink = String.format("%s/api/teacher/register/teacher?token=%s&email=%s",
-                baseUrl, token, request.getEmail());
+        String baseUrl = appProperties.getBaseUrl() != null ? appProperties.getBaseUrl() : HTTP_LOCALHOST_8080;
+        String registrationLink = String.format(API_TEACHER_REGISTER_TEACHER_TOKEN, baseUrl, token, request.getEmail());
 
         // Log the generated link
 //        log.info("Registration link: {}", registrationLink);

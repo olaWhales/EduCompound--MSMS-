@@ -112,13 +112,11 @@ public class PasswordSetupService {
                 .build();
         tokenRepository.save(tokenEntity);
 
-        String setupLink = String.format("http://localhost:8080/api/tenant/setup-password?token=%s&email=%s", token, email);
-        String emailContent = String.format(
-                "<html><body><h2>Password Setup</h2><p>Click <a href='%s'>here</a> to set your password.</p></body></html>",
-                setupLink);
-        EmailEvent emailEvent = new EmailEvent(this, email, "Set Your Password", emailContent, true);
+        String setupLink = String.format(TENANT_SETUP_PASSWORD, token, email);
+        String emailContent = String.format(CLICK_THE_LINK_TO_SETUP_THE_PASSWORD, setupLink);
+        EmailEvent emailEvent = new EmailEvent(this, email, SET_YOUR_PASSWORD, emailContent, true);
         eventPublisher.publishEvent(emailEvent);
-        log.info("Password setup email sent to: {}", email);
+        log.info(PASSWORD_SETUP_EMAIL_SENT_TO, email);
     }
 
     @Transactional
@@ -140,7 +138,7 @@ public class PasswordSetupService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
         tokenRepository.delete(tokenEntity); // Invalidate token after use
-        log.info("Password set for user: {}", request.getEmail());
+        log.info(PASSWORD_SETUP_EMAIL_SENT_TO, request.getEmail());
     }
 
     // 🔥 Add this new method below others
@@ -161,8 +159,8 @@ public class PasswordSetupService {
         String emailContent = String.format(
                 "<html><body><h2>Password Setup</h2><p>Click <a href='%s'>here</a> to set your password.</p></body></html>",
                 setupLink);
-        EmailEvent emailEvent = new EmailEvent(this, user.getEmail(), "Set Your Password", emailContent, true);
+        EmailEvent emailEvent = new EmailEvent(this, user.getEmail(), SET_YOUR_PASSWORD, emailContent, true);
         eventPublisher.publishEvent(emailEvent);
-        log.info("Resent password setup email to: {}", user.getEmail());
+        log.info(RESENT_PASSWORD_SETUP_EMAIL_TO, user.getEmail());
     }
 }

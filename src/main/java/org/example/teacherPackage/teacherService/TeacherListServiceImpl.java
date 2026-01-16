@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.example.utilities.Utilities.*;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -24,14 +26,11 @@ public class TeacherListServiceImpl implements TeacherListService {
     public List<TeacherListResponse> getTeachersByTenant() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Users currentUser;
-        if (principal instanceof UserPrincipal) {
-            currentUser = ((UserPrincipal) principal).users(); // Access the Users object
+        if (principal instanceof UserPrincipal) { currentUser = ((UserPrincipal) principal).users(); // Access the Users object
         } else if (principal instanceof String) {
             // Handle case where principal is a username (e.g., during anonymous access)
-            throw new IllegalStateException("User principal is not authenticated properly");
-        } else {
-            throw new IllegalStateException("Unsupported principal type");
-        }
+            throw new IllegalStateException(USER_PRINCIPAL_IS_NOT_AUTHENTICATED_PROPERLY);
+        } else {throw new IllegalStateException(UNSUPPORTED_PRINCIPAL_TYPE);}
         UUID adminTenantId = currentUser.getAdminTenant().getTenantId();
         return userRepository.findByRoleAndAdminTenant_TenantId(Role.TEACHER, adminTenantId)
                 .stream()

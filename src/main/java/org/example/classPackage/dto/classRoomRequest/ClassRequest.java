@@ -10,8 +10,8 @@ public class ClassRequest {
     @NotBlank(message = "Class name is required")
     private String className;
 
-//    @NotBlank(message = "Session year is required")
-//    private String sessionYear;
+    @NotBlank(message = "Session year is required")
+    private String sessionYear;
 //
 //    @NotBlank(message = "Term is required")
 //    private String term;

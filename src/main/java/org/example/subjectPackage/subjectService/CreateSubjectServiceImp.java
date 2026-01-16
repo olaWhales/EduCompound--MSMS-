@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 
+import static org.example.utilities.Utilities.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -35,7 +37,7 @@ public class CreateSubjectServiceImp implements CreateSubjectService {
                 .findByClassNameInAndAdminTenant_TenantId(classNames, tenant.getTenantId());
 
         if (validateClassRooms.isEmpty()) {
-            throw new IllegalArgumentException("No matching class found for the given names under this tenant.");
+            throw new IllegalArgumentException(NO_MATCHING_CLASS_FOUND_FOR_THE_GIVEN_NAMES_UNDER_THIS_TENANT);
         }
         Subject subject = Subject.builder()
                 .name(request.getName())

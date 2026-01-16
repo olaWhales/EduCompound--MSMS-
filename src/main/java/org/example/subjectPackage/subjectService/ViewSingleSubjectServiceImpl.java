@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+import static org.example.utilities.Utilities.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -26,7 +28,7 @@ public class ViewSingleSubjectServiceImpl implements ViewSingleSubjectService {
 
         Subject subject = subjectRepository
                 .findByIdAndTenant_TenantId(subjectId, tenant.getTenantId())
-                .orElseThrow(() -> new IllegalArgumentException("Subject not found for this tenant."));
+                .orElseThrow(() -> new IllegalArgumentException(SUBJECT_NOT_FOUND_OR_NOT_OWNED_BY_THIS_TENANT));
 
         return subjectMapper.toResponse(subject);
     }

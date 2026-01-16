@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.globalExceptionPackage.Valid;
 import org.example.sessionPackage.dto.sessionRequest.SessionRequest;
 import org.example.sessionPackage.dto.sessionResponse.SessionResponse;
-import org.example.sessionPackage.sessionService.SessionService;
+import org.example.sessionPackage.sessionService.SessionCreateService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class SessionController {
-    private final SessionService sessionService;
+    private final SessionCreateService sessionCreateService;
 
     @PostMapping("/session/create")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SessionResponse> createSession(@Valid @RequestBody SessionRequest request) {
-        return ResponseEntity.ok(sessionService.sessionResponse(request));
+        return ResponseEntity.ok(sessionCreateService.create(request));
     }
 }

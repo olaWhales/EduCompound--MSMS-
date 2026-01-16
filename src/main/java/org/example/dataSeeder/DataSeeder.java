@@ -38,6 +38,8 @@ public class DataSeeder {
                         .password(passwordEncoder.encode("supersecurepassword"))
                         .role(Role.SUPER_ADMIN)
                         .adminTenant(defaultTenant) // Associate with default tenant
+                        .verified(true)     // ✅ REQUIRED
+                        .active(true)       // ✅ REQUIRED
                         .createdAt(new Date())
                         .build();
                 userRepository.save(superAdmin);

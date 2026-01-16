@@ -11,6 +11,9 @@ import org.example.utilities.TenantSecurityUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+
+import static org.example.utilities.Utilities.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -26,7 +29,7 @@ public class UpdateSubjectServiceImp implements UpdateSubjectService {
 
         Subject subject = subjectRepository
                 .findByIdAndTenant_TenantId(subjectId, tenant.getTenantId())
-                .orElseThrow(() -> new IllegalArgumentException("Subject not found or not owned by this tenant."));
+                .orElseThrow(() -> new IllegalArgumentException(SUBJECT_NOT_FOUND_OR_NOT_OWNED_BY_THIS_TENANT));
 
         subject.setName(request.getSubjectName());
         subject.setDescription(request.getSubjectDescription());

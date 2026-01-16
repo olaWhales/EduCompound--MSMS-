@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static org.example.utilities.Utilities.*;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -28,20 +30,15 @@ public class TeacherDeleteServiceImpl implements TeacherDeleteService {
         Users currentUser = userPrincipal.users();
         UUID adminTenantId = currentUser.getAdminTenant().getTenantId();
 
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Teacher not found with email: " + email));
-        Teacher teacher = teacherRepository.findByUsers(user)
-                .orElseThrow(() -> new IllegalArgumentException("Teacher record not found for email: " + email));
-
-        if (!teacher.getAdminTenant().getTenantId().equals(adminTenantId)) {
-            throw new SecurityException("Unauthorized access: Teacher does not belong to your tenant");
-        }
+        Users user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException(TEACHER_NOT_FOUND_WITH_EMAIL + email));
+        Teacher teacher = teacherRepository.findByUsers(user).orElseThrow(() -> new IllegalArgumentException(TEACHER_RECORD_NOT_FOUND_FOR_EMAIL + email));
+        if (!teacher.getAdminTenant().getTenantId().equals(adminTenantId)) {throw new SecurityException(UNAUTHORIZED_ACCESS_TEACHER_DOES_NOT_BELONG_TO_YOUR_TENANT);}
 
         teacherRepository.delete(teacher);
         userRepository.delete(user);
 
         return TeacherDeleteResponse.builder()
-                .message("Teacher deleted successfully")
+                .message(TEACHER_DELETED_SUCCESSFULLY)
                 .build();
     }
 }

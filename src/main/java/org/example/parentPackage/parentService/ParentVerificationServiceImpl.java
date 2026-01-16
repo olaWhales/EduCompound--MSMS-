@@ -22,20 +22,18 @@ public class ParentVerificationServiceImpl implements ParentVerificationService 
 
     @Override
     public void verifyToken(String email, String token, String password) {
-        if (!tokenService.validateToken(email, token)) {
-            throw new IllegalArgumentException("Invalid or expired token.");
-        }
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        if (!tokenService.validateToken(email, token)) {throw new IllegalArgumentException("Invalid or expired token.");}
+        Users user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found."));
         user.setPassword(passwordEncoder.encode(password));
+        user.setVerified(true);
+        user.setActive(false);  // comment says activate, but false
         userRepository.save(user);
         tokenService.markEmailAsVerified(email);
     }
 
     @Override
     public void resendVerificationToken(String email) {
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        Users user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found."));
         String newToken = tokenService.generateSixDigitToken();
         // Assume Token entity and repository are set up
         tokenService.saveToken(email, newToken, user.getAdminTenant());

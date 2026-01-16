@@ -2,18 +2,19 @@ package org.example.studentPackage.studentService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.Authentication.AuthenticatedUserProvider;
 import org.example.data.model.*;
-import org.example.data.model.UserPrincipal;
 import org.example.data.repositories.*;
 import org.example.studentPackage.dto.studentRequest.StudentRegisterRequest;
 import org.example.studentPackage.dto.studentResponse.StudentRegisterResponse;
 import org.example.utilities.StudentCodeGenerator;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Date;
+
+import static org.example.utilities.Utilities.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,128 +24,131 @@ public class StudentRegisterServiceImpl implements StudentRegisterService {
     private final ClassRoomRepository classRepository;
     private final SessionRepository sessionRepository;
     private final SchoolBranchRepository branchRepository;
-    private final ParentRepository parentRepository;
     private final UserRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
-    private final StudentCodeGenerator generateStudentCode ;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
 
-@Transactional
-public StudentRegisterResponse studentRegistrationResponse(StudentRegisterRequest request) {
-    // 👤 Get authenticated user and tenant
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
-    Users adminUser = principal.users();
-    AdminTenant tenant = adminUser.getAdminTenant();
+    @Override
+    @Transactional
+    public StudentRegisterResponse studentRegistrationResponse(StudentRegisterRequest request) {
 
-    // 📘 Get current active session for tenant (instead of passing sessionYear/term from client)
-    Session session = sessionRepository.findByAdminTenantAndIsActiveTrue(tenant)
-            .orElseThrow(() -> new IllegalStateException("No active session for tenant"));
+        // 🔐 Authenticated admin + tenant
+        Users adminUser = authenticatedUserProvider.getCurrentUser();
+        AdminTenant tenant = adminUser.getAdminTenant();
 
-    // 🏫 Validate and fetch class
-    ClassRoom classRoom = classRepository.findByAdminTenantAndSessionAndClassNameIgnoreCase(
-            tenant, session, request.getClassName()
-    ).orElseThrow(() -> new IllegalArgumentException("Class not found for the session and className"));
+        // 📘 Active session
+        Session session = sessionRepository
+                .findByAdminTenantAndIsActiveTrue(tenant)
+                .orElseThrow(() -> new IllegalStateException(NO_ACTIVE_SESSION_FOR_TENANT));
 
+        // 🏫 Class validation
+        ClassRoom classRoom = classRepository
+                .findByAdminTenantAndSessionAndClassNameIgnoreCase(
+                        tenant, session, request.getClassName()
+                )
+                .orElseThrow(() ->
+                        new IllegalArgumentException(CLASS_NOT_FOUND_FOR_THE_SESSION_AND_CLASSNAME)
+                );
 
-    // 🧍‍♂️ Check for existing student with same full name under same tenant and session
-    boolean studentExists = studentRepository.existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndMiddleNameIgnoreCaseAndAdminTenantAndSession(
-            request.getFirstName().trim(),
-            request.getLastName().trim(),
-            request.getMiddleName() == null ? "" : request.getMiddleName().trim(),
-            tenant,
-            session
-    );
+        // 🚫 DUPLICATE CHECKS
+        if (Boolean.TRUE.equals(request.getCreateLoginAccount())) {
 
-    if (studentExists) {
-        throw new IllegalArgumentException("A student with the same full name already exists in this session");
-    }
+            if (request.getStudentEmail() == null || request.getStudentEmail().isBlank()
+                    || request.getPassword() == null || request.getPassword().isBlank()) {
 
-    // 🏢 Optional: Fetch and validate branch
-    SchoolBranch branch = null;
-    if (request.getBranchId() != null) {
-        branch = branchRepository.findById(request.getBranchId())
-                .orElseThrow(() -> new IllegalArgumentException("Branch not found"));
+                throw new IllegalArgumentException(
+                        "Student email and password are required to create a login account."
+                );
+            }
 
-        if (!branch.getAdminTenant().equals(tenant)) {
-            throw new IllegalArgumentException("Branch does not belong to your school");
-        }
-    }
+            boolean emailExists = usersRepository
+                    .existsByRecoveryEmailAndAdminTenant(
+                            request.getStudentEmail().trim(),
+                            tenant
+                    );
 
-    // 👪 Optional: Fetch and validate parent
-//    Parent parent = null;
-//    if (request.getParentEmail() != null && !request.getParentEmail().isBlank()) {
-//        Users parentUser = usersRepository.findByEmail(request.getParentEmail())
-//                .orElseThrow(() -> new IllegalArgumentException("Parent user not found"));
-//
-//        if (!parentUser.getAdminTenant().equals(tenant)) {
-//            throw new IllegalArgumentException("Parent user does not belong to your school");
-//        }
-//
-//        parent = parentRepository.findByUsers(parentUser)
-//                .orElseThrow(() -> new IllegalArgumentException("Parent record not found for the user"));
-//    }
+            if (emailExists) {
+                throw new IllegalArgumentException(
+                        "A student with this email already exists in this school."
+                );
+            }
 
-    // 🔒 Handle student login account creation
-    Users studentUser = null;
-    if (Boolean.TRUE.equals(request.getCreateLoginAccount())) {
-        if (request.getStudentEmail() == null || request.getPassword() == null) {
-            throw new IllegalArgumentException("Email and password are required to create student login account");
-        }
+        } else {
 
-        if (usersRepository.existsByEmail(request.getStudentEmail())) {
-            throw new IllegalArgumentException("A user with this student email already exists");
+            boolean studentExists = studentRepository
+                    .existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndMiddleNameIgnoreCaseAndAdminTenantAndSessionAndClassRoom(
+                            request.getFirstName().trim(),
+                            request.getLastName().trim(),
+                            request.getMiddleName() == null ? "" : request.getMiddleName().trim(),
+                            tenant,
+                            session,
+                            classRoom
+                    );
+
+            if (studentExists) {
+                throw new IllegalArgumentException(
+                        "A student with the same name already exists in this class for the current session."
+                );
+            }
         }
 
-        String loginUsername = StudentCodeGenerator.generateUniqueStudentCode(
-                classRoom.getClassName(), studentRepository, tenant
+        // 🧾 GENERATE STUDENT CODE ONCE (🔥 FIX)
+        String studentCode = StudentCodeGenerator.generateUniqueStudentCode(
+                classRoom.getClassName(),
+                studentRepository,
+                tenant
         );
 
-        studentUser = Users.builder()
-                .email(loginUsername) // ✅ studentCode is used for login
-                .recoveryEmail(request.getStudentEmail()) // ✅ For password reset (you can add this to Users model)
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.STUDENT)
+        // 🔒 CREATE LOGIN ACCOUNT (OPTIONAL)
+        Users studentUser = null;
+
+        if (Boolean.TRUE.equals(request.getCreateLoginAccount())) {
+
+            studentUser = Users.builder()
+                    .email(studentCode)                          // ✅ SAME CODE
+                    .recoveryEmail(request.getStudentEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.STUDENT)
+                    .adminTenant(tenant)
+                    .verified(true)
+                    .active(false)                               // admin controls activation
+                    .createdAt(new Date())
+                    .statusUpdatedAt(Instant.now())
+                    .build();
+
+            usersRepository.save(studentUser);
+        }
+
+        // 🧒 CREATE STUDENT
+        Student student = Student.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .middleName(request.getMiddleName())
+                .gender(request.getGender())
                 .adminTenant(tenant)
+                .classRoom(classRoom)
+                .session(session)
+                .term(session.getTerm())
+                .studentCode(studentCode)                       // ✅ SAME CODE
+                .users(studentUser)
                 .createdAt(new Date())
+                .statusUpdatedAt(Instant.now())
                 .build();
 
-        usersRepository.save(studentUser);
-    } else {
-        request.setStudentEmail(null);
-        request.setPassword(null);
-    }
+        Student savedStudent = studentRepository.save(student);
 
-    // 🧾 Generate unique student code
-    String studentCode = StudentCodeGenerator.generateUniqueStudentCode(
-            classRoom.getClassName(), studentRepository, tenant
-    );
-
-    // 🧒 Create and save student
-    Student student = Student.builder()
-            .firstName(request.getFirstName())
-            .lastName(request.getLastName())
-            .middleName(request.getMiddleName())
-            .gender(request.getGender())
-            .adminTenant(tenant)
-            .classRoom(classRoom)
-            .session(session)
-            .studentCode(studentCode)
-            .term(session.getTerm())
-//            .schoolBranch(branch)
-//            .parent(parent)
-            .users(studentUser)
-            .createdAt(new Date())
-            .build();
-
-    Student student1 = studentRepository.save(student);
-
+        // ✅ RESPONSE
         return StudentRegisterResponse.builder()
-            .name(student1.getFirstName() + " " + student1.getLastName() + " " + student1.getMiddleName())
-            .studentCode("Your student code number is => " + studentCode)
-            .sessionYear(student1.getSession().getSessionYear())
-            .term(session.getTerm())
-            .message("Student registered successfully")
-            .createdAt(student.getCreatedAt())
-            .build();
+                .name(
+                        savedStudent.getFirstName() + " " +
+                                savedStudent.getLastName() + " " +
+                                savedStudent.getMiddleName()
+                )
+                .studentCode(YOUR_STUDENT_CODE_NUMBER_IS + studentCode)
+                .sessionYear(savedStudent.getSession().getSessionYear())
+                .term(savedStudent.getTerm())
+                .message(STUDENT_REGISTERED_SUCCESSFULLY)
+                .createdAt(savedStudent.getCreatedAt())
+                .build();
     }
 }

@@ -30,37 +30,36 @@ public class AssessmentConfigServiceImpl implements AssessmentConfigService {
     @Override
     public AssessmentGroupResponse saveAssessmentConfig(AssessmentConfigRequest request) {
         AdminTenant tenant = tenantSecurityUtil.getAuthenticatedTenant();
-
-        if (assessmentConfigRepository.existsByGroupNameAndTenant(request.getName(), tenant)) {
-            throw new IllegalArgumentException("Assessment config group '" + request.getName() + "' already exists.");
-        }
-
+        if (assessmentConfigRepository.existsByGroupNameAndTenant(request.getName(), tenant)) {throw new IllegalArgumentException("Assessment config group '" + request.getName() + "' already exists.");}
         AssessmentConfigValidator.validate(request);
 
         List<AssessmentConfig> configs = request.getConfigurations().stream()
-                .map(cfg -> AssessmentConfig.builder()
-                        .name(cfg.getName())
-                        .type(cfg.getType())
-                        .weight(cfg.getWeight())
-                        .isRequired(cfg.getIsRequired())
-                        .isActive(cfg.getIsActive())
-                        .tenant(tenant)
-                        .groupName(request.getName())
-                        .build())
-                .toList();
-
+            .map(cfg -> AssessmentConfig.builder()
+                .name(cfg.getName())
+                .type(cfg.getType())
+                .weight(cfg.getWeight())
+                .isRequired(cfg.getIsRequired())
+                .isActive(cfg.getIsActive())
+                .tenant(tenant)
+                .groupName(request.getName())
+                // === ADD THESE TWO LINES ===
+                .numberOfCAs(request.getNumberOfCAs())
+                .numberOfExam(request.getNumberOfExams())
+                // ===========================
+                .build())
+            .toList();
         List<AssessmentConfig> savedConfigs = assessmentConfigRepository.saveAll(configs);
 
         List<AssessmentConfigResponse> responses = savedConfigs.stream()
-                .map(cfg -> AssessmentConfigResponse.builder()
-                        .id(cfg.getId())
-                        .name(cfg.getName())
-                        .type(cfg.getType())
-                        .weight(cfg.getWeight())
-                        .isRequired(cfg.getIsRequired())
-                        .isActive(cfg.getIsActive())
-                        .build())
-                .toList();
+            .map(cfg -> AssessmentConfigResponse.builder()
+                .id(cfg.getId())
+                .name(cfg.getName())
+                .type(cfg.getType())
+                .weight(cfg.getWeight())
+                .isRequired(cfg.getIsRequired())
+                .isActive(cfg.getIsActive())
+                .build())
+            .toList();
 
         return AssessmentGroupResponse.builder()
                 .name(request.getName())

@@ -38,9 +38,13 @@ public class AssessmentConfig {
     @Min(value = 0, message = "Weight must be non-negative")
     private Integer weight;
 
+    // === ADD THE @Column ANNOTATIONS HERE ===
+    @Column(name = "number_of_c_as")
     private int numberOfCAs; // e.g., 1, 2, or 3
 
-    private int numberOfExam ;
+    @Column(name = "number_of_exam")
+    private int numberOfExam;
+    // ========================================
 
     @JsonProperty("type")
     private AssessmentType type;

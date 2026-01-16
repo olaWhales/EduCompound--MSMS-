@@ -100,75 +100,79 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class SessionServiceImp implements SessionService {
+@Transactional
+public class SessionCreateServiceImpl implements SessionCreateService {
 
     private final SessionRepository sessionRepository;
     private final SchoolBranchRepository branchRepository;
+    private final TenantContextResolver tenantResolver;
+    private final SessionValidator sessionValidator;
 
-    @Transactional
-    public SessionResponse sessionResponse(SessionRequest sessionRequest) {
-        // 1. Validate dates
-        if (sessionRequest.getStartDate() == null || sessionRequest.getEndDate() == null) {
-            throw new IllegalArgumentException("Start date and end date are required");
-        }
-        if (sessionRequest.getStartDate().after(sessionRequest.getEndDate())) {
-            throw new IllegalArgumentException("Start date must be before end date");
-        }
+    @Override
+    public SessionResponse create(SessionRequest request) {
 
-        // 2. Get authenticated user and tenant
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
-        Users currentUser = principal.users();
-        AdminTenant tenant = currentUser.getAdminTenant();
-
-        // 3. Optional branch
-        SchoolBranch branch = null;
-        if (sessionRequest.getBranchId() != null) {
-            branch = branchRepository.findById(sessionRequest.getBranchId())
-                    .orElseThrow(() -> new IllegalArgumentException("Branch not found"));
-            if (!branch.getAdminTenant().equals(tenant)) {
-                throw new IllegalArgumentException("Branch does not belong to your school.");
-            }
-        }
-
-        // 4. Deactivate existing session (branch-aware)
-        if (branch != null) {
-            sessionRepository.deactivateAllForTenantAndBranch(tenant.getTenantId(), branch);
-        } else {
-            sessionRepository.deactivateAllForTenant(tenant.getTenantId()); // fallback
-        }
-
-        // 5. Check for duplicate session (same dates + branch)
-        boolean exists = sessionRepository.existsByAdminTenantAndStartDateAndEndDateAndSchoolBranch(
-                tenant,
-                sessionRequest.getStartDate(),
-                sessionRequest.getEndDate(),
-                branch
+        sessionValidator.validateDates(
+                request.getStartDate(),
+                request.getEndDate()
         );
+
+        AdminTenant tenant = tenantResolver.currentTenant();
+
+        SchoolBranch branch = resolveBranch(request.getBranchId(), tenant);
+
+        deactivateExistingSessions(tenant, branch);
+
+        boolean exists = sessionRepository
+                .existsByAdminTenantAndStartDateAndEndDateAndSchoolBranch(
+                        tenant,
+                        request.getStartDate(),
+                        request.getEndDate(),
+                        branch
+                );
+
         if (exists) {
-            throw new IllegalArgumentException("A session with the same dates already exists for this tenant/branch.");
+            throw new IllegalArgumentException("Duplicate session for this tenant/branch");
         }
 
-        // 6. Save new session
         Session session = Session.builder()
                 .adminTenant(tenant)
-                .schoolBranch(branch) // can be null
+                .schoolBranch(branch)
+                .sessionYear(request.getSessionYear())
+                .term(request.getTerm())
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
                 .isActive(true)
-                .sessionYear(sessionRequest.getSessionYear())
-                .term(sessionRequest.getTerm())
-                .startDate(sessionRequest.getStartDate())
-                .endDate(sessionRequest.getEndDate())
                 .build();
+
         sessionRepository.save(session);
 
-        // 7. Response
         return SessionResponse.builder()
-//                .sessionId(session.getSessionId())
                 .message("Session created successfully")
                 .createdAt(new Date())
                 .build();
+    }
+
+    private SchoolBranch resolveBranch(UUID branchId, AdminTenant tenant) {
+        if (branchId == null) return null;
+
+        SchoolBranch branch = branchRepository.findById(branchId)
+                .orElseThrow(() -> new IllegalArgumentException("Branch not found"));
+
+        sessionValidator.validateBranchOwnership(branch, tenant);
+        return branch;
+    }
+
+    private void deactivateExistingSessions(AdminTenant tenant, SchoolBranch branch) {
+        if (branch != null) {
+            sessionRepository.deactivateAllForTenantAndBranch(
+                    tenant.getTenantId(), branch
+            );
+        } else {
+            sessionRepository.deactivateAllForTenant(tenant.getTenantId());
+        }
     }
 }

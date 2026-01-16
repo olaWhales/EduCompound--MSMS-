@@ -26,18 +26,10 @@ public class ClassServiceImp implements ClassService {
         Users user = principal.users();
 
         AdminTenant tenant = user.getAdminTenant();
-        Session session = sessionRepository.findByAdminTenantAndIsActiveTrue(tenant)
-                .orElseThrow(() -> new IllegalArgumentException("No active session found for this tenant"));
-
+        Session session = sessionRepository.findByAdminTenantAndIsActiveTrue(tenant).orElseThrow(() -> new IllegalArgumentException("No active session found for this tenant"));
         // Validate duplicate class name
-        boolean exists = classRepository.existsByAdminTenantAndSessionAndClassNameIgnoreCase(
-                tenant, session, request.getClassName()
-        );
-
-        if (exists) {
-            throw new IllegalArgumentException("Class with this name already exists in the selected session");
-        }
-
+        boolean exists = classRepository.existsByAdminTenantAndSessionAndClassNameIgnoreCase(tenant, session, request.getClassName());
+        if (exists) {throw new IllegalArgumentException("Class with this name already exists in the selected session");}
         // Optional branch
         SchoolBranch branch = null;
         if (request.getBranchId() != null) {

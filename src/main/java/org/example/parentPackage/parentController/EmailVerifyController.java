@@ -1,59 +1,3 @@
-//package org.example.controller.parentController;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.example.dto.requests.parentRequest.VerificationRequestDto;
-//import org.example.tokenPackages.TokenService;
-//import org.example.services.parentService.ParentVerificationService;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.validation.BindingResult;
-//import org.springframework.web.bind.annotation.*;
-//
-//@Controller
-//@RequiredArgsConstructor
-//@RequestMapping("/parent")
-//public class EmailVerifyController {
-//
-//    private final ParentVerificationService verificationService;
-//    private final TokenService tokenService ;
-//
-//    @GetMapping("/verify-page")
-////    public String showVerificationPage(Model model, @RequestParam(value = "email", required = false) String email) {
-//    public String showVerificationPage(@RequestParam String email, Model model) {
-//        VerificationRequestDto request = new VerificationRequestDto();
-////        if (email != null) request.setEmail(email);
-//        request.setEmail(email);
-//        model.addAttribute("verificationRequest", request);
-//        return "verify";
-//    }
-//
-//    @PostMapping("/verify")
-//    public String verifyParent(
-//            @ModelAttribute("verificationRequest") VerificationRequestDto request,
-//            BindingResult result,
-//            Model model) {
-//        try {
-//            // check if passwords match
-//            if (!request.getPassword().equals(request.getVerifyPassword())) {
-//                model.addAttribute("error", "Passwords do not match");
-//                return "verify";
-//            }
-//
-//            // Validate token and update password
-//            tokenService.validateToken(request.getEmail(), request.getToken());
-//            tokenService.markEmailAsVerified(request.getEmail(), request.getToken());
-//            // Save password logic...
-//
-//            model.addAttribute("success", "Account activated successfully!");
-//            return "verify-success";  // redirect or success UI
-//        } catch (Exception ex) {
-//            model.addAttribute("error", ex.getMessage());
-//            model.addAttribute("verificationRequest", request);  // Reinject form object
-//            return "verify";
-//        }
-//    }
-//
-//}
 package org.example.parentPackage.parentController;
 
 import lombok.RequiredArgsConstructor;
@@ -63,11 +7,14 @@ import org.example.tokenPackage.TokenService;
 import org.example.parentPackage.parentService.ParentVerificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/parent")
 public class EmailVerifyController {
@@ -75,17 +22,54 @@ public class EmailVerifyController {
     private final ParentVerificationService verificationService;
     private final TokenService tokenService;
 
+    // This renders the Thymeleaf verification page
+    @GetMapping("/verify-page")
+    public String showVerificationPage(
+            @RequestParam String email,
+            @RequestParam String token, // token optional now
+            Model model) {
+
+        VerificationRequestDto request = new VerificationRequestDto();
+        request.setEmail(email);
+//        if (token != null) request.setToken(token);
+        request.setToken(token);
+        model.addAttribute("verificationRequest", request);
+        return "verify";
+    }
+
+    // This handles form submission from the Thymeleaf page
+//    @PostMapping("/verify")
+//    public String verifyParent(@ModelAttribute("verificationRequest") VerificationRequestDto request,
+//                               Model model) {
+//        try {
+//            if (!request.getPassword().equals(request.getVerifyPassword())) {
+//                model.addAttribute("error", "Passwords do not match");
+//                return "verify";
+//            }
+//
+//            tokenService.validateToken(request.getEmail(), request.getToken());
+//            tokenService.markEmailAsVerified(request.getEmail());
+//
+//            model.addAttribute("success", "Account activated successfully!");
+//            return "verify-success";  // Your Thymeleaf success page
+//
+//        } catch (Exception ex) {
+//            model.addAttribute("error", ex.getMessage());
+//            model.addAttribute("verificationRequest", request);
+//            return "verify";
+//        }
+//    }
     @PostMapping("/verify")
-    public ResponseEntity<ParentRegisterResponse> verifyParent(@RequestBody VerificationRequestDto request) {
+    public String verifyParent(
+            @ModelAttribute("verificationRequest") VerificationRequestDto request,
+            BindingResult result,
+            Model model) {
+
         try {
             // Check if passwords match
             if (!request.getPassword().equals(request.getVerifyPassword())) {
-                return ResponseEntity.badRequest().body(
-                        ParentRegisterResponse.builder()
-                            .message("Passwords do not match.")
-                            .createdAt(new Date())
-                            .build()
-                );
+                model.addAttribute("errorMessage", "Passwords do not match");
+                return "verification-failed, password not matched";
             }
 
             // Validate token
@@ -94,28 +78,23 @@ public class EmailVerifyController {
             // Mark token as verified
             tokenService.markEmailAsVerified(request.getEmail());
 
-            // Optional: Save the password securely via verificationService (not shown here)
+            // Optional: Save password securely via verificationService
+            verificationService.verifyToken(request.getEmail(), request.getToken(), request.getPassword());
 
-            // Return success response
-            return ResponseEntity.ok(
-                    ParentRegisterResponse.builder()
-                            .message("Account activated successfully!")
-                            .createdAt(new Date())
-                            .build()
-            );
+            // Return Thymeleaf success page
+            return "verification-success";
 
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    ParentRegisterResponse.builder()
-                            .message("Verification failed: " + ex.getMessage())
-                            .createdAt(new Date())
-                            .build()
-            );
+            model.addAttribute("errorMessage", ex.getMessage());
+            model.addAttribute("verificationRequest", request); // re-inject form data
+            return "verification-failed";
         }
     }
 
-    // Optional test endpoint to confirm success message
+
+    // Optional: JSON endpoints if needed
     @GetMapping("/verify-success-json")
+    @ResponseBody
     public ParentRegisterResponse verifySuccessJson() {
         return ParentRegisterResponse.builder()
                 .message("Account activated successfully!")
@@ -123,8 +102,8 @@ public class EmailVerifyController {
                 .build();
     }
 
-    // Optional test endpoint to simulate a verification failure
     @GetMapping("/verify-error-json")
+    @ResponseBody
     public ParentRegisterResponse verifyErrorJson() {
         return ParentRegisterResponse.builder()
                 .message("Verification failed or token expired.")

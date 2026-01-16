@@ -15,7 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Date;
+
+import static org.example.utilities.Utilities.*;
 
 @Service
 @AllArgsConstructor
@@ -31,28 +34,20 @@ public class TeacherRegistrationServiceImpl implements TeacherRegistrationServic
     @Override
     public void completeTeacherRegistration(TeacherRegistrationRequest request, String token) {
 
-        log.info("Processing teacher registration for email: {}", request.getEmail());
+        log.info(PROCESSING_TEACHER_REGISTRATION_FOR_EMAIL, request.getEmail());
         try {
             // Validate token
-            Token tokenEntity = tokenRepository.findByTokenAndEmail(token, request.getEmail())
-                    .orElseThrow(() -> new RuntimeException("Invalid or expired token: " + token));
-            if (tokenEntity.getExpiresAt().before(new Date())) {
-                throw new RuntimeException("Token has expired");
-            }
-            if (tokenEntity.getAdminTenant() == null || tokenEntity.getAdminTenant().getTenantId() == null) {
-                throw new IllegalStateException("AdminTenant not set or not persisted in token!");
-            }
-            // Check for existing user
-            if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-                throw new RuntimeException("Email already registered");
-            }
+            Token tokenEntity = tokenRepository.findByTokenAndEmail(token, request.getEmail()).orElseThrow(() -> new RuntimeException(INVALID_OR_EXPIRE_TOKEN + token));
+            if (tokenEntity.getExpiresAt().before(new Date())) {throw new RuntimeException(TOKEN_HAS_EXPIRE_MESSAGE);}
+            if (tokenEntity.getAdminTenant() == null || tokenEntity.getAdminTenant().getTenantId() == null) {throw new IllegalStateException(ADMINTENANT_NOT_SET_OR_NOT_PERSISTED_IN_TOKEN);}
+            if (userRepository.findByEmail(request.getEmail()).isPresent()) {throw new RuntimeException(EMAIL_ALREADY_REGISTERED);}
 
-// Re-fetch AdminTenant to ensure it's managed
+            // Re-fetch AdminTenant to ensure it's managed
             AdminTenant persistedTenant = adminTenantRepository.findById(
                     tokenEntity.getAdminTenant().getTenantId()
-            ).orElseThrow(() -> new RuntimeException("AdminTenant not found in DB"));
+            ).orElseThrow(() -> new RuntimeException(ADMINTENANT_NOT_FOUND_IN_DB));
 
-// Now set the tenant on the new user
+            // Now set the tenant on the new user
             Users user = new Users();
             user.setEmail(request.getEmail());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -60,28 +55,28 @@ public class TeacherRegistrationServiceImpl implements TeacherRegistrationServic
             user.setFirstName(request.getFirstName());
             user.setLastName(request.getLastName());
             user.setPhone(request.getPhoneNumber());
-            user.setAdminTenant(persistedTenant); // ✅ This is now safe
+            user.setAdminTenant(persistedTenant);
             user.setCreatedAt(new Date());
+            user.setVerified(true);   // ✅ teachers do NOT verify email
+            user.setActive(false);   // ✅ admin must activate
+            user.setStatusUpdatedAt(Instant.now());
+
 
             log.info("AdminTenant in token: {}", tokenEntity.getAdminTenant());
             log.info("Tenant ID: {}", tokenEntity.getAdminTenant() != null ? tokenEntity.getAdminTenant().getTenantId() : "null");
-
             user = userRepository.save(user);
 
             // Create teacher
             Teacher teacher = new Teacher();
             teacher.setUsers(user);
-//            teacher.setFirstName(request.getFirstName());
-//            teacher.setLastName(request.getLastName());
             teacher.setAdminTenant(tokenEntity.getAdminTenant()); // Link to inviting admin
-//            teacher.setTenantId(tokenEntity.getAdmin().getTenantId()); // Assuming tenant_id from admin
             teacherRepository.save(teacher);
 
             // Invalidate token
             tokenRepository.delete(tokenEntity);
-            log.info("Teacher registered successfully: {}", request.getEmail());
+            log.info(TEACHER_REGISTERED_SUCCESSFULLY , request.getEmail());
         } catch (Exception e) {
-            log.error("Error during teacher registration: {}", e.getMessage(), e);
+            log.error(ERROR_DURING_TEACHER_REGISTRATION, e.getMessage(), e);
             throw e; // Re-throw to trigger 500 response with details
         }
     }

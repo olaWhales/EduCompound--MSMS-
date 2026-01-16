@@ -2,6 +2,9 @@ package org.example.data.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -39,15 +42,36 @@ public class Users {
 
     @Column(unique = true)
     private String studentCode;
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(nullable = false)
+//    private Date createdAt;
 
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
-    private Date createdAt;
 
     @Column(nullable = false)
     private boolean verified = false;
 
     private String phone ;
+
+    private boolean active;  // ✅ add this field
+
+
+    @Column(nullable = false)
+    private Instant statusUpdatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.statusUpdatedAt = Instant.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.statusUpdatedAt = Instant.now();
+    }
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Date createdAt;
+
+
 
 }

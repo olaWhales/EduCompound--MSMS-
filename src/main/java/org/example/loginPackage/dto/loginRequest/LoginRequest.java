@@ -10,5 +10,5 @@ import lombok.*;
 public class LoginRequest {
     private String emailOrStudentCode;
     private String password;
-
 }
+

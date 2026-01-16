@@ -11,3 +11,5 @@ public class EduCompoundApplication {
         SpringApplication.run(EduCompoundApplication.class);
     }
 }
+
+

@@ -2,15 +2,13 @@ package org.example.data.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -29,7 +27,7 @@ public class ClassRoom {
 
     @ManyToOne
     @JoinColumn(name = "session_id", nullable = false)
-    private Session session;
+    private Term term;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "branch_id")

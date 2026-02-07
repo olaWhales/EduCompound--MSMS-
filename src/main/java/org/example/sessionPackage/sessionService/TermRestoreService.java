@@ -2,7 +2,7 @@ package org.example.sessionPackage.sessionService;
 
 import java.util.UUID;
 
-public interface SessionDeleteService {
-    void delete(UUID sessionId);
+public interface TermRestoreService {
+    void restore(UUID sessionId);
 }
 

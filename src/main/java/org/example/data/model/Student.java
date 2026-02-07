@@ -9,7 +9,8 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -33,7 +34,7 @@ public class Student {
 
     @ManyToOne
     @JoinColumn(name = "session_id")
-    private Session session;
+    private Term term;
 
     @Column(nullable = false, unique = true)
     private String studentCode;
@@ -69,8 +70,8 @@ public class Student {
     @JoinColumn(name = "user_id")
     private Users users;
 
-    @Column(name = "term")
-    private String term;
+//    @Column(name = "term")
+//    private TermType term;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

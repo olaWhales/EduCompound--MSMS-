@@ -21,3 +21,4 @@ public class AccountStatusPolicy {
         if (user.getPassword() == null) {throw new DisabledException("Password not set.");}
     }
 }
+

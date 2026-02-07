@@ -73,7 +73,8 @@ public class SecurityConfig {
                             "/api/update/grading-config/**",
                             "/api/getAll/grading-configs",
                             "/api/getById/grading-configs/**",
-                            "/api/grading-config/deactivate/**").hasRole("ADMIN")
+                            "/api/grading-config/deactivate/**",
+                            "admin/academic-sessions").hasRole("ADMIN")
                     .requestMatchers("/resources/**",
                             "/static/**",
                             "/css/**",

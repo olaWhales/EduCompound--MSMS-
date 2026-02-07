@@ -9,16 +9,25 @@ import java.util.UUID;
 @Repository
 public interface ResultRepository extends JpaRepository<StudentResult, UUID> {
 
-    boolean existsByStudentAndSubjectAndClassRoomAndSessionAndTermAndAdminTenant(
-            Student student,
-            Subject subject,
-            ClassRoom classRoom,
-            Session session,
-            String term,
-            AdminTenant adminTenant
-    );
+//    boolean existsByStudentAndSubjectAndClassRoomAndSessionAndTermAndAdminTenant(
+//            Student student,
+//            Subject subject,
+//            ClassRoom classRoom,
+//            Term session,
+//            String term,
+//            AdminTenant adminTenant
+//    );
 
-    boolean existsBySession(Session session);
+//    boolean existsByStudentAndSubjectAndClassRoomAndTermAndAdminTenant(
+//            Student student,
+//            Subject subject,
+//            ClassRoom classRoom,
+//            Term term,
+//            AdminTenant adminTenant
+//    );
+//
+//
+//    boolean existsBySession(Term term);
 //    Optional<StudentResult> findByStudentIdAndSubjectIdAndSessionIdAndTermAndClassRoomId(
 //            UUID studentId, UUID subjectId, UUID sessionId, Term term, UUID classRoomId
 //    );
@@ -30,4 +39,18 @@ public interface ResultRepository extends JpaRepository<StudentResult, UUID> {
 //    List<StudentResult> findAllByStudentIdAndSessionIdAndTerm(
 //            UUID studentId, UUID sessionId, Term term
 //    );
+
+    // Check if a result already exists for this student, subject, class, term, and tenant
+    boolean existsByStudentAndSubjectAndClassRoomAndTermAndAdminTenant(
+            Student student,
+            Subject subject,
+            ClassRoom classRoom,
+            Term term,
+            AdminTenant adminTenant
+    );
+
+    // Optional helper
+    boolean existsByTerm(Term term);
+
+//    boolean existsBySession(Term term);
 }

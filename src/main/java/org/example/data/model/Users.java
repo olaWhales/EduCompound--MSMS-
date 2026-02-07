@@ -9,7 +9,8 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -26,8 +27,6 @@ public class Users {
     @Column(unique = true, nullable = false)
     private String email;
 
-//    @Column(nullable = false)
-//    private String password; // hashed
     @Column(nullable = true) // Allow null initially, set during password setup
     private String password; // hashed, will be null until set by tenant
 

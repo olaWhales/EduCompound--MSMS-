@@ -34,12 +34,16 @@ public class StudentResult {
     @JoinColumn(name = "class_id", nullable = false)
     private ClassRoom classRoom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "session_id", nullable = false)
-    private Session session;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "session_id", nullable = false)
+//    private Term term;
 
-    @Column(nullable = false)
-    private String term; // Example: "First Term", "Second Term", etc.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "term_id", nullable = false)
+    private Term term;   // ✅ ONLY ONE term
+
+//    @Column(nullable = false)
+//    private String term; // Example: "First Term", "Second Term", etc.
 
     private Double caScore;    // e.g., over 30
     private Double examScore;  // e.g., over 70

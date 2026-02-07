@@ -2,10 +2,9 @@ package org.example.studentBulkResultEntryPackage.data.model;
 
 import jakarta.persistence.*;
 import org.example.data.model.AdminTenant;
-import org.example.data.model.Session;
+import org.example.data.model.Term;
 import org.example.data.model.Student;
 import org.example.data.model.Subject;
-import org.example.studentBulkResultEntryPackage.data.model.AssessmentConfig;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
@@ -39,7 +38,7 @@ public class AssessmentResult {
     private AdminTenant tenant;
 
     @ManyToOne(optional = false)
-    private Session session;
+    private Term term;
 
     // Optional: timestamp fields
     private LocalDateTime createdAt;

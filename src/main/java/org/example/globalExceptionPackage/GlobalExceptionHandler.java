@@ -2,6 +2,7 @@ package org.example.globalExceptionPackage;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.exceptions.ParentAlreadyRegisteredException;
+import org.example.sessionPackage.Exception.InvalidSessionStateException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,5 +66,12 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(response, status);
+    }
+
+    @ExceptionHandler(InvalidSessionStateException.class)
+    public ResponseEntity<?> handleInvalidSessionState(InvalidSessionStateException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
     }
 }

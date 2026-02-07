@@ -5,9 +5,18 @@ import org.example.data.model.SchoolBranch;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface SchoolBranchRepository extends JpaRepository<SchoolBranch, UUID> {
     List<SchoolBranch> findByAdminTenant(AdminTenant tenant);
     boolean existsByAdminTenantAndName(AdminTenant tenant, String name);
+
+    Optional<SchoolBranch> findByAdminTenantAndIsPrimaryTrue(AdminTenant tenant);
+
+    Optional<SchoolBranch> findFirstByAdminTenantOrderByIdAsc(AdminTenant tenant);
+
+    long countByAdminTenant(AdminTenant tenant);
+
+    Optional<SchoolBranch> findPrimaryByAdminTenant(AdminTenant tenant);
 }

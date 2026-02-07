@@ -3,6 +3,11 @@ package org.example.utilities;
 import java.security.SecureRandom;
 
 public class Utilities {
+    public static final String SESSION_UPDATED_SUCCESSFULLY = "Session updated successfully";
+    public static final String ONLY_COMPLETED_SESSIONS_CAN_BE_RESTORED = "Only_completed_sessions_can_be_restored" ;
+    public static final String ACADEMIC_SESSION_ALREADY_EXISTS = "Academic session already exist";
+    public static final String ACADEMIC_SESSION_CREATED_SUCCESSFULLY = "Academic session created successfully";
+    //    public static final String DUPLICATE_SESSION_FOR_THIS_SESSION = ;
     public static String ADMIN_EMAIL_ALREADY_REGISTERED_AND_PASSWORD_IS_SET = "Admin email already registered and password is set.";
     public static String REGISTRATION_SUCCESS = "Registration successful, please check your email for the password setup";
     public static String AUTHENTICATION_REQUIRE_MESSAGE = "Authentication required with UserPrincipal";
@@ -42,14 +47,25 @@ public class Utilities {
     public static String NO_ACTIVE_SESSION_FOR_TENANT = "No active session for tenant";
     public static String CLASS_NOT_FOUND_FOR_THE_SESSION_AND_CLASSNAME = "Class_not_found_for_the_session_and_className";
     public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
-    public static String BRANCH_NOT_FOUND = "Branch not found";
-    public static String BRANCH_DOES_NOT_BELONG_TO_YOUR_SCHOOL = "Branch does not belong to your school";
+    public static final String BRANCH_NOT_FOUND = "Branch not found";
     public static String EMAIL_AND_PASSWORD_ARE_REQUIRED_TO_CREATE_STUDENT_LOGIN_ACCOUNT = "Email and password are required to create student login account";
     public static String A_USER_WITH_THIS_STUDENT_EMAIL_ALREADY_EXISTS = "A user with this student email already exists";
     public static String YOUR_STUDENT_CODE_NUMBER_IS = "Your student code number is => ";
     public static String STUDENT_REGISTERED_SUCCESSFULLY = "Student registered successfully";
-//    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
-//    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
+    public static final String DUPLICATE_SESSION_FOR_THIS_SESSION = "Duplicate session for this tenant/branch";
+    public static final String SESSION_CREATED_SUCCESSFULLY = "Session created successfully";
+    public static final String SESSION_NOT_FOUND = "Session not found";
+    public static final String BRANCH_DOES_NOT_BELONG_TO_YOUR_SCHOOL = "Branch does not belong to your school";
+    public static final String START_DATE_MUST_BE_BEFORE_END_DATE = "Start date must be before end date";
+    public static final String START_AND_END_DATES_ARE_REQUIRED = "Start and end dates are required";
+    public static final String ONLY_ADMINS_CAN_UPDATE_INACTIVE_SESSIONS = "Only admins can update inactive sessions";
+    public static final String CANNOT_UPDATE_SESSION_FROM_ANOTHER_TENANT = "Cannot update session from another tenant";
+    public static final String YOU_CANNOT_RESTORE_A_SESSION_FROM_ANOTHER_TENANT = "You cannot restore a session from another tenant";
+    public static final String SESSION_IS_ALREADY_ACTIVE = "Session is already active";
+    public static final String CANNOT_DELETE_SESSION_WITH_ACADEMIC_RECORDS_ARCHIVE_INSTEAD = "Cannot delete session with academic records. Archive instead.";
+    public static final String SESSION_IS_ALREADY_ARCHIVED = "Session is already archived";
+    public static final String YOU_CANNOT_DELETE_A_SESSION_FROM_ANOTHER_TENANT = "You cannot delete a session from another tenant";
+
 //    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
 //    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";
 //    public static String A_STUDENT_WITH_THE_SAME_FULL_NAME_ALREADY_EXISTS_IN_THIS_SESSION = "A student with the same full name already exists in this session";

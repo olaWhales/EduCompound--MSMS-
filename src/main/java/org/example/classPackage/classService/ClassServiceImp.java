@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.data.model.*;
 import org.example.data.repositories.ClassRoomRepository;
-import org.example.data.repositories.SessionRepository;
+import org.example.data.repositories.TermRepository;
 import org.example.data.repositories.SchoolBranchRepository;
 import org.example.classPackage.dto.classRoomRequest.ClassRequest;
 import org.example.classPackage.dto.classRoomResponse.ClassResponse;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ClassServiceImp implements ClassService {
     private final ClassRoomRepository classRepository;
-    private final SessionRepository sessionRepository;
+    private final TermRepository termRepository;
     private final SchoolBranchRepository branchRepository;
 
     @Transactional
@@ -26,9 +26,16 @@ public class ClassServiceImp implements ClassService {
         Users user = principal.users();
 
         AdminTenant tenant = user.getAdminTenant();
-        Session session = sessionRepository.findByAdminTenantAndIsActiveTrue(tenant).orElseThrow(() -> new IllegalArgumentException("No active session found for this tenant"));
+//        Term term = termRepository.findByAdminTenantAndIsActiveTrue(tenant).orElseThrow(() -> new IllegalArgumentException("No active session found for this tenant"));
+
+//        Term term = termRepository.findByAdminTenantAndIsActiveTrue(tenant).orElseThrow(() -> new IllegalArgumentException("No active term found for tenant"));
+
+        Term term = termRepository
+                .findByAdminTenantAndStatus(tenant, TermStatus.ACTIVE)
+                .orElseThrow(() -> new IllegalStateException("No active term found"));
+
         // Validate duplicate class name
-        boolean exists = classRepository.existsByAdminTenantAndSessionAndClassNameIgnoreCase(tenant, session, request.getClassName());
+        boolean exists = classRepository.existsByAdminTenantAndTermAndClassNameIgnoreCase(tenant, term, request.getClassName());
         if (exists) {throw new IllegalArgumentException("Class with this name already exists in the selected session");}
         // Optional branch
         SchoolBranch branch = null;
@@ -40,18 +47,18 @@ public class ClassServiceImp implements ClassService {
         // Create and save class
         ClassRoom schoolClass = ClassRoom.builder()
                 .className(request.getClassName())
-                .session(session)
+                .term(term)
                 .adminTenant(tenant)
                 .schoolBranch(branch)
                 .build();
 
-        classRepository.save(schoolClass);
+        ClassRoom classRoom = classRepository.save(schoolClass);
 
         return ClassResponse.builder()
                 .classId(schoolClass.getClassId())
                 .className(schoolClass.getClassName())
-                .sessionYear(session.getSessionYear())
-                .term(session.getTerm())
+                .sessionYear(term.getAcademicSession().getSessionYear())
+                .term(term.getTerm())
                 .message("Class created successfully")
                 .build();
     }

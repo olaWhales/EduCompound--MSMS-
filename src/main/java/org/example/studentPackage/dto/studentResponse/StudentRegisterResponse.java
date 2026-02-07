@@ -2,6 +2,7 @@ package org.example.studentPackage.dto.studentResponse;
 
 import lombok.Builder;
 import lombok.Data;
+import org.example.data.model.TermType;
 
 import java.util.Date;
 
@@ -12,7 +13,7 @@ public class StudentRegisterResponse {
     private String studentCode; // 👈 Add this
 //    private UUID studentId;
     private String sessionYear;
-    private String term;
+    private TermType term;
     private String message;
     private Date createdAt;
 

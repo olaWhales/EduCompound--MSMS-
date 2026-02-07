@@ -2,6 +2,7 @@ package org.example.classPackage.dto.classRoomResponse;
 
 import lombok.Builder;
 import lombok.Data;
+import org.example.data.model.TermType;
 
 import java.util.UUID;
 
@@ -11,6 +12,6 @@ public class ClassResponse {
     private UUID classId;
     private String className;
     private String sessionYear;
-    private String term;
+    private TermType term;
     private String message;
 }
